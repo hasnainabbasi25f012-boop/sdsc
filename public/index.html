@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Smart Disease Symptoms Checker</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{
+  --bg1:#0f172a; --bg2:#1e293b; --glass:rgba(255,255,255,0.08); --glass-border:rgba(255,255,255,0.18);
+  --text:#f1f5f9; --muted:#94a3b8; --primary:#38bdf8; --primary-2:#818cf8; --accent:#22d3ee;
+  --success:#34d399; --danger:#f87171; --warn:#fbbf24;
+  --shadow:0 8px 32px rgba(0,0,0,0.35);
+  --radius:18px;
+}
+[data-theme="light"]{
+  --bg1:#e0f2fe; --bg2:#f0f9ff; --glass:rgba(255,255,255,0.55); --glass-border:rgba(255,255,255,0.7);
+  --text:#0f172a; --muted:#475569; --primary:#0284c7; --primary-2:#6366f1; --accent:#0891b2;
+  --shadow:0 8px 32px rgba(2,6,23,0.12);
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
+html,body{min-height:100%}
+body{
+  background:linear-gradient(135deg,var(--bg1),var(--bg2));
+  background-attachment:fixed;
+  color:var(--text); min-height:100vh;
+  transition:.4s;
+}
+body::before{
+  content:""; position:fixed; inset:0; pointer-events:none;
+  background:
+    radial-gradient(600px 400px at 10% 10%, rgba(56,189,248,.15), transparent 60%),
+    radial-gradient(700px 500px at 90% 80%, rgba(129,140,248,.18), transparent 60%);
+  z-index:-1;
+}
+a{color:var(--primary);text-decoration:none}
+button{cursor:pointer;border:none;font-family:inherit}
+.glass{background:var(--glass);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--glass-border);border-radius:var(--radius);box-shadow:var(--shadow)}
+.btn{padding:.7rem 1.2rem;border-radius:12px;font-weight:600;background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;transition:.25s;display:inline-flex;align-items:center;gap:.5rem}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 25px rgba(56,189,248,.35)}
+.btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.btn.ghost{background:transparent;border:1px solid var(--glass-border);color:var(--text)}
+.btn.danger{background:linear-gradient(135deg,#ef4444,#f97316)}
+.btn.success{background:linear-gradient(135deg,#10b981,#22d3ee)}
+.btn.sm{padding:.4rem .8rem;font-size:.85rem}
+input,select,textarea{width:100%;padding:.75rem 1rem;border-radius:12px;border:1px solid var(--glass-border);background:var(--glass);color:var(--text);font-size:.95rem;outline:none;transition:.2s}
+input:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(56,189,248,.25)}
+::placeholder{color:var(--muted)}
+select option{background:var(--bg2);color:var(--text)}
+label{font-size:.85rem;color:var(--muted);display:block;margin-bottom:.3rem}
+.hidden{display:none!important}
+
+/* NAV */
+nav.topnav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.5rem;margin:1rem}
+.brand{display:flex;align-items:center;gap:.7rem;font-weight:700;font-size:1.1rem}
+.brand i{color:var(--primary);font-size:1.5rem}
+.nav-links{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+.nav-links button{background:transparent;color:var(--text);padding:.5rem .9rem;border-radius:10px;font-weight:500;transition:.2s;display:flex;align-items:center;gap:.4rem}
+.nav-links button:hover,.nav-links button.active{background:var(--glass);color:var(--primary)}
+
+/* AUTH */
+.auth-wrap{min-height:80vh;display:grid;grid-template-columns:1fr 1fr;gap:2rem;padding:2rem;max-width:1200px;margin:auto;align-items:center}
+.auth-hero{padding:2.5rem}
+.auth-hero h1{font-size:2.5rem;line-height:1.1;margin-bottom:1rem;background:linear-gradient(135deg,var(--primary),var(--primary-2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.auth-hero p{color:var(--muted);margin-bottom:1.5rem;line-height:1.6}
+.feature-row{display:flex;gap:1rem;margin-top:1rem;flex-wrap:wrap}
+.feature-pill{padding:.4rem .9rem;border-radius:99px;background:var(--glass);border:1px solid var(--glass-border);font-size:.8rem}
+.auth-card{padding:2rem}
+.auth-tabs{display:flex;gap:.5rem;margin-bottom:1.5rem}
+.auth-tabs button{flex:1;padding:.7rem;border-radius:10px;background:transparent;color:var(--muted);border:1px solid var(--glass-border);font-weight:600;transition:.2s}
+.auth-tabs button.active{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border-color:transparent}
+.form-grid{display:grid;gap:.9rem}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+.err-msg{font-size:.8rem;color:var(--danger);padding:.4rem .8rem;background:rgba(248,113,113,.1);border-radius:8px;border:1px solid rgba(248,113,113,.3);display:none}
+.err-msg.show{display:block}
+
+/* DASHBOARD */
+.container{max-width:1400px;margin:auto;padding:0 1.5rem 3rem}
+.dash-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:1.5rem;margin-top:1rem}
+.section{padding:1.4rem;margin-bottom:1.5rem}
+.section h2{display:flex;align-items:center;gap:.6rem;font-size:1.2rem;margin-bottom:1rem}
+.section h2 i{color:var(--primary)}
+.cat-tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
+.cat-tabs button{padding:.4rem .9rem;border-radius:99px;background:var(--glass);border:1px solid var(--glass-border);color:var(--text);font-size:.8rem}
+.cat-tabs button.active{background:linear-gradient(135deg,var(--primary),var(--primary-2));border-color:transparent;color:#fff}
+.disease-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.8rem;max-height:480px;overflow-y:auto;padding-right:.4rem}
+.disease-card{padding:.9rem;border-radius:14px;background:var(--glass);border:1px solid var(--glass-border);cursor:pointer;transition:.25s;text-align:center}
+.disease-card:hover{transform:translateY(-3px);border-color:var(--primary);box-shadow:0 8px 20px rgba(56,189,248,.2)}
+.disease-card.selected{border-color:var(--primary);background:rgba(56,189,248,.15)}
+.disease-card i{font-size:1.6rem;color:var(--primary);margin-bottom:.4rem;display:block}
+.disease-card .nm{font-size:.85rem;font-weight:600}
+.disease-card .ct{font-size:.7rem;color:var(--muted);margin-top:.2rem}
+.symptom-list{display:flex;flex-direction:column;gap:.5rem;max-height:320px;overflow-y:auto}
+.symptom-item{display:flex;align-items:center;gap:.7rem;padding:.7rem .9rem;background:var(--glass);border:1px solid var(--glass-border);border-radius:12px;cursor:pointer;transition:.2s}
+.symptom-item:hover{border-color:var(--primary)}
+.symptom-item input{width:auto;margin:0}
+.symptom-item.checked{background:rgba(52,211,153,.15);border-color:var(--success)}
+.symptom-meta{font-size:.7rem;color:var(--muted);margin-left:auto}
+.selected-symptoms{display:flex;flex-wrap:wrap;gap:.4rem;margin:.8rem 0;min-height:40px}
+.chip{padding:.3rem .7rem;border-radius:99px;background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;font-size:.75rem;display:flex;align-items:center;gap:.4rem}
+.chip i{cursor:pointer}
+.result-card{padding:1.4rem;border-radius:14px;background:linear-gradient(135deg,rgba(56,189,248,.1),rgba(129,140,248,.1));border:1px solid var(--glass-border);margin-top:1rem}
+.result-card h3{font-size:1.4rem;margin-bottom:.5rem;color:var(--primary)}
+.confidence{height:8px;background:var(--glass);border-radius:99px;overflow:hidden;margin:.5rem 0 1rem}
+.confidence-bar{height:100%;background:linear-gradient(90deg,var(--success),var(--primary));transition:width 1s}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:1rem}
+.info-block{padding:1rem;background:var(--glass);border-radius:12px;border:1px solid var(--glass-border)}
+.info-block h4{font-size:.9rem;margin-bottom:.5rem;color:var(--accent);display:flex;align-items:center;gap:.4rem}
+.info-block ul{list-style:none;font-size:.85rem;line-height:1.6;color:var(--muted)}
+.info-block ul li::before{content:"• ";color:var(--primary)}
+
+/* SIDE */
+.tip-card{padding:1.2rem;background:linear-gradient(135deg,rgba(34,211,238,.15),rgba(129,140,248,.15));border-radius:14px;border:1px solid var(--glass-border);margin-bottom:1rem}
+.tip-card .lbl{font-size:.75rem;color:var(--accent);font-weight:600;letter-spacing:1px;margin-bottom:.4rem}
+.tip-card .tip{font-size:.95rem;line-height:1.5}
+.quick-list{display:flex;flex-direction:column;gap:.6rem}
+.quick-item{padding:.8rem 1rem;border-radius:12px;background:var(--glass);border:1px solid var(--glass-border);cursor:pointer;transition:.2s;display:flex;justify-content:space-between;align-items:center}
+.quick-item:hover{border-color:var(--primary);transform:translateX(3px)}
+.quick-item .nm{font-weight:600;font-size:.9rem}
+.quick-item .sub{font-size:.7rem;color:var(--muted)}
+.emergency{padding:1rem;background:linear-gradient(135deg,rgba(248,113,113,.2),rgba(251,146,60,.15));border:1px solid rgba(248,113,113,.4);border-radius:14px}
+.emergency h3{color:var(--danger);font-size:1rem;margin-bottom:.6rem}
+.emergency div{font-size:.85rem;color:var(--text);margin:.2rem 0}
+
+/* USER PROFILE CARD */
+.profile-badge{display:flex;align-items:center;gap:.8rem;padding:.8rem 1rem;background:var(--glass);border-radius:12px;border:1px solid var(--glass-border);margin-bottom:1rem}
+.profile-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary-2));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem;color:#fff;flex-shrink:0}
+.profile-info .pname{font-weight:600;font-size:.95rem}
+.profile-info .pmeta{font-size:.75rem;color:var(--muted)}
+
+/* HISTORY */
+.history-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem}
+.history-card{padding:1.2rem;background:var(--glass);border:1px solid var(--glass-border);border-radius:14px;transition:.2s}
+.history-card:hover{transform:translateY(-3px);border-color:var(--primary)}
+.history-card .d{font-size:.75rem;color:var(--muted)}
+.history-card h3{font-size:1.1rem;margin:.3rem 0;color:var(--primary)}
+.history-card .meta{font-size:.85rem;color:var(--muted);margin:.4rem 0}
+.history-card .acts{display:flex;gap:.4rem;margin-top:.8rem}
+.history-empty{text-align:center;padding:3rem;color:var(--muted)}
+.history-empty i{font-size:3rem;margin-bottom:1rem;opacity:.3;display:block}
+
+/* MODAL */
+.modal-back{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:100;padding:1rem;overflow-y:auto}
+.modal{max-width:700px;width:100%;padding:0;max-height:90vh;overflow-y:auto;background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius);backdrop-filter:blur(18px)}
+.modal-head{padding:1rem 1.4rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--glass-border)}
+.modal-body{padding:1.4rem}
+.x{background:transparent;color:var(--text);font-size:1.3rem}
+
+/* SLIP */
+.slip{background:#fff;color:#0f172a;padding:2rem;border-radius:12px;font-family:'Poppins',sans-serif}
+.slip-head{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #0284c7;padding-bottom:1rem;margin-bottom:1rem}
+.slip-head h2{color:#0284c7}
+.slip-head .id{font-size:.8rem;color:#64748b}
+.slip-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;font-size:.9rem}
+.slip-row b{color:#0284c7}
+.slip h3{margin:1rem 0 .5rem;color:#0284c7;font-size:1rem;border-bottom:1px dashed #cbd5e1;padding-bottom:.3rem}
+.slip ul{margin-left:1.2rem;font-size:.88rem;line-height:1.7}
+.slip-footer{margin-top:1.5rem;text-align:center;font-size:.75rem;color:#64748b;border-top:1px dashed #cbd5e1;padding-top:.8rem}
+
+/* LOADER */
+.loader{display:inline-block;width:18px;height:18px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.page-loader{position:fixed;inset:0;background:var(--bg1);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;gap:1rem;transition:.5s}
+.page-loader.fade{opacity:0;pointer-events:none}
+
+.toast{position:fixed;bottom:24px;right:24px;padding:1rem 1.4rem;border-radius:12px;background:var(--glass);border:1px solid var(--glass-border);backdrop-filter:blur(12px);z-index:200;animation:slideIn .3s;max-width:320px;font-size:.9rem;display:flex;align-items:center;gap:.6rem}
+.toast.success{border-color:var(--success)}
+.toast.error{border-color:var(--danger)}
+@keyframes slideIn{from{transform:translateX(120%)}to{transform:translateX(0)}}
+
+/* API status badge */
+.api-badge{display:inline-flex;align-items:center;gap:.4rem;font-size:.7rem;padding:.2rem .6rem;border-radius:99px;font-weight:600}
+.api-badge.online{background:rgba(52,211,153,.2);color:var(--success);border:1px solid rgba(52,211,153,.4)}
+.api-badge.offline{background:rgba(248,113,113,.2);color:var(--danger);border:1px solid rgba(248,113,113,.4)}
+
+@media(max-width:900px){
+  .auth-wrap{grid-template-columns:1fr}
+  .dash-grid{grid-template-columns:1fr}
+  .row2{grid-template-columns:1fr}
+  .auth-hero{padding:1rem}
+}
+</style>
+</head>
+<body data-theme="dark">
+
+<!-- PAGE LOADER -->
+<div class="page-loader" id="pageLoader">
+  <i class="fa-solid fa-stethoscope" style="font-size:3rem;color:var(--primary)"></i>
+  <div class="loader"></div>
+  <div style="color:var(--muted);font-size:.9rem">Connecting to server…</div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="topnav glass" id="topnav">
+  <div class="brand">
+    <i class="fa-solid fa-stethoscope"></i>
+    <span>Smart Disease Symptoms Checker</span>
+    <span id="apiBadge" class="api-badge offline"><i class="fa-solid fa-circle"></i> offline</span>
+  </div>
+  <div class="nav-links" id="navLinks">
+    <button onclick="theme.toggle()" id="themeBtn"><i class="fa-solid fa-moon"></i></button>
+  </div>
+</nav>
+
+<!-- AUTH PAGE -->
+<section id="page-auth" class="page hidden">
+  <div class="auth-wrap">
+    <div class="auth-hero">
+      <h1>Decode your symptoms.<br/>Discover your diagnosis.</h1>
+      <p>An AI-assisted symptom analyzer with 50+ diseases, doctor recommendations, prescription slips, and your full medical history — all backed by MySQL.</p>
+      <div class="feature-row">
+        <div class="feature-pill"><i class="fa-solid fa-brain"></i> Smart Analysis</div>
+        <div class="feature-pill"><i class="fa-solid fa-user-doctor"></i> Doctor Match</div>
+        <div class="feature-pill"><i class="fa-solid fa-file-prescription"></i> Medical Slips</div>
+        <div class="feature-pill"><i class="fa-solid fa-database"></i> MySQL Backend</div>
+      </div>
+    </div>
+    <div class="auth-card glass">
+      <div class="auth-tabs">
+        <button id="tabSignin" class="active" onclick="auth.switchTab('signin')">Sign In</button>
+        <button id="tabSignup" onclick="auth.switchTab('signup')">Sign Up</button>
+      </div>
+
+      <!-- SIGN IN -->
+      <div id="signinForm" class="form-grid">
+        <div><label>Username</label><input id="siUser" placeholder="your_username" autocomplete="username"/></div>
+        <div><label>Password</label><input id="siPass" type="password" placeholder="••••••••" autocomplete="current-password"/></div>
+        <div class="err-msg" id="siErr"></div>
+        <button class="btn" id="siBtn" onclick="auth.signIn()"><i class="fa-solid fa-right-to-bracket"></i> Sign In</button>
+      </div>
+
+      <!-- SIGN UP -->
+      <div id="signupForm" class="form-grid hidden">
+        <div class="row2">
+          <div><label>Full Name</label><input id="suName" placeholder="John Doe"/></div>
+          <div><label>Age</label><input id="suAge" type="number" min="1" max="120" placeholder="28"/></div>
+        </div>
+        <div class="row2">
+          <div><label>Gender</label>
+            <select id="suGender">
+              <option value="">Select</option><option>Male</option><option>Female</option><option>Other</option>
+            </select>
+          </div>
+          <div><label>Username</label><input id="suUser" placeholder="unique_username" autocomplete="username"/></div>
+        </div>
+        <div><label>Password</label><input id="suPass" type="password" placeholder="Minimum 4 characters" autocomplete="new-password"/></div>
+        <div class="err-msg" id="suErr"></div>
+        <button class="btn" id="suBtn" onclick="auth.signUp()"><i class="fa-solid fa-user-plus"></i> Create Account</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DASHBOARD -->
+<section id="page-dashboard" class="page hidden">
+  <div class="container">
+    <div class="dash-grid">
+      <!-- LEFT -->
+      <div>
+        <div class="section glass">
+          <h2><i class="fa-solid fa-magnifying-glass"></i> Search Symptom</h2>
+          <input id="symptomSearch" placeholder="Type a symptom e.g. fever, headache, cough…" oninput="app.searchSymptom()"/>
+          <div id="searchResults" style="margin-top:.8rem;display:flex;flex-direction:column;gap:.4rem"></div>
+        </div>
+
+        <div class="section glass">
+          <h2><i class="fa-solid fa-virus-covid"></i> Browse Diseases</h2>
+          <div class="cat-tabs" id="catTabs"></div>
+          <div class="disease-grid" id="diseaseGrid"></div>
+        </div>
+
+        <div class="section glass">
+          <h2><i class="fa-solid fa-list-check"></i> Symptoms <span id="curDiseaseLbl" style="font-size:.85rem;color:var(--muted);margin-left:.5rem"></span></h2>
+          <div class="symptom-list" id="symptomList"><p style="color:var(--muted);font-size:.9rem">Click any disease above to view its symptoms.</p></div>
+          <div style="margin-top:1rem">
+            <label>Selected Symptoms</label>
+            <div class="selected-symptoms" id="selectedSymptoms"></div>
+            <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.5rem">
+              <button class="btn" onclick="app.analyze()"><i class="fa-solid fa-brain"></i> Analyze</button>
+              <button class="btn ghost" onclick="app.voiceInput()"><i class="fa-solid fa-microphone"></i> Voice</button>
+              <button class="btn ghost" onclick="app.clearSelection()"><i class="fa-solid fa-rotate-left"></i> Clear</button>
+            </div>
+          </div>
+          <div id="resultArea"></div>
+        </div>
+      </div>
+
+      <!-- RIGHT -->
+      <div>
+        <div id="profileBadgeWrap"></div>
+
+        <div class="tip-card glass">
+          <div class="lbl">DAILY HEALTH TIP</div>
+          <div class="tip" id="dailyTip">Loading…</div>
+        </div>
+
+        <div class="section glass">
+          <h2><i class="fa-solid fa-bolt"></i> Quick Check</h2>
+          <div class="quick-list" id="quickList"></div>
+        </div>
+
+        <div class="emergency glass">
+          <h3><i class="fa-solid fa-triangle-exclamation"></i> Emergency Contacts</h3>
+          <div><b>Ambulance:</b> 1122</div>
+          <div><b>Rescue:</b> 1122</div>
+          <div><b>Edhi Foundation:</b> 115</div>
+          <div><b>Cardiac Helpline:</b> 0800-45000</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HISTORY -->
+<section id="page-history" class="page hidden">
+  <div class="container">
+    <div class="section glass">
+      <h2><i class="fa-solid fa-clock-rotate-left"></i> My Medical History</h2>
+      <p style="color:var(--muted);font-size:.9rem;margin-bottom:1rem">All your generated medical slips are stored securely in the database.</p>
+      <div class="history-grid" id="historyGrid"></div>
+    </div>
+  </div>
+</section>
+
+<div id="toastHolder"></div>
+
+<script>
+/* ═══════════════════════════ DATA ═══════════════════════════ */
+const CATEGORIES = ["All","Respiratory","Digestive","Neurological","Cardiac","Endocrine","Infectious","Skin","Musculoskeletal","Mental","Urinary","Eye/ENT"];
+const DISEASES = [
+ {n:"Common Cold",c:"Respiratory",i:"fa-head-side-cough",s:["runny nose","sneezing","sore throat","mild fever","cough"],dr:{n:"Dr. Tariq Mahmood",sp:"General Physician",ex:8,fee:300,av:"Mon-Sat 10am-6pm"},m:[{n:"Paracetamol 500mg",d:"1 tab x 3/day",dur:"5 days"},{n:"Cetirizine 10mg",d:"1 tab at night",dur:"5 days"}],r:"Rest 7-8hrs, warm fluids, steam inhalation",di:"Soups, ginger tea, citrus fruits; avoid cold drinks"},
+ {n:"Influenza (Flu)",c:"Respiratory",i:"fa-virus",s:["high fever","body ache","fatigue","cough","chills","headache"],dr:{n:"Dr. Tariq Mahmood",sp:"General Physician",ex:8,fee:400,av:"Mon-Sat 10am-6pm"},m:[{n:"Oseltamivir 75mg",d:"1 cap x 2/day",dur:"5 days"},{n:"Paracetamol 650mg",d:"1 tab x 3/day",dur:"5 days"}],r:"Bed rest, isolate, hydrate",di:"Light meals, broths, fruits; avoid oily food"},
+ {n:"Asthma",c:"Respiratory",i:"fa-lungs",s:["wheezing","shortness of breath","chest tightness","cough","difficulty breathing"],dr:{n:"Dr. Sana Mirza",sp:"Pulmonologist",ex:12,fee:700,av:"Tue-Sat 11am-4pm"},m:[{n:"Salbutamol Inhaler",d:"2 puffs as needed",dur:"ongoing"},{n:"Montelukast 10mg",d:"1 tab at night",dur:"30 days"}],r:"Avoid triggers, breathing exercises",di:"Avoid dairy, cold foods; eat magnesium-rich foods"},
+ {n:"Pneumonia",c:"Respiratory",i:"fa-lungs-virus",s:["high fever","chest pain","cough with phlegm","shortness of breath","chills"],dr:{n:"Dr. Sana Mirza",sp:"Pulmonologist",ex:12,fee:800,av:"Tue-Sat 11am-4pm"},m:[{n:"Amoxicillin 500mg",d:"1 cap x 3/day",dur:"7 days"},{n:"Azithromycin 500mg",d:"1 tab x 1/day",dur:"5 days"}],r:"Bed rest, deep breathing exercises",di:"Protein-rich diet, fluids; avoid smoking"},
+ {n:"Tuberculosis",c:"Respiratory",i:"fa-lungs",s:["persistent cough","weight loss","night sweats","fatigue","blood in sputum","fever"],dr:{n:"Dr. Sana Mirza",sp:"Pulmonologist",ex:12,fee:900,av:"Tue-Sat 11am-4pm"},m:[{n:"Isoniazid 300mg",d:"1 tab/day",dur:"6 months"},{n:"Rifampicin 600mg",d:"1 tab/day",dur:"6 months"}],r:"DOTS therapy, isolation, regular followup",di:"High calorie, protein, vitamin-rich diet"},
+ {n:"Bronchitis",c:"Respiratory",i:"fa-lungs",s:["cough with phlegm","chest discomfort","fatigue","mild fever","wheezing"],dr:{n:"Dr. Sana Mirza",sp:"Pulmonologist",ex:12,fee:700,av:"Tue-Sat 11am-4pm"},m:[{n:"Amoxicillin 500mg",d:"1 cap x 3/day",dur:"7 days"},{n:"Bromhexine syrup",d:"10ml x 3/day",dur:"7 days"}],r:"Avoid smoke, humidify air, rest",di:"Warm fluids, honey-ginger; avoid dairy"},
+ {n:"Sinusitis",c:"Eye/ENT",i:"fa-head-side-mask",s:["facial pain","nasal congestion","headache","thick nasal discharge","reduced smell"],dr:{n:"Dr. Hassan Raza",sp:"ENT Specialist",ex:10,fee:500,av:"Mon-Fri 9am-3pm"},m:[{n:"Amoxicillin 500mg",d:"1 cap x 3/day",dur:"7 days"},{n:"Xylometazoline spray",d:"2 puffs x 2/day",dur:"5 days"}],r:"Steam inhalation, warm compress",di:"Hot soups, spicy foods okay; avoid cold drinks"},
+ {n:"Gastritis",c:"Digestive",i:"fa-stomach",s:["stomach pain","nausea","bloating","indigestion","loss of appetite"],dr:{n:"Dr. Ayesha Malik",sp:"Gastroenterologist",ex:11,fee:700,av:"Mon-Sat 10am-5pm"},m:[{n:"Pantoprazole 40mg",d:"1 tab before breakfast",dur:"14 days"},{n:"Sucralfate syrup",d:"10ml x 3/day",dur:"14 days"}],r:"Eat smaller meals, avoid stress",di:"Avoid spicy/oily food; bananas, rice, oats"},
+ {n:"Acid Reflux (GERD)",c:"Digestive",i:"fa-fire",s:["heartburn","sour taste","chest pain","regurgitation","difficulty swallowing"],dr:{n:"Dr. Ayesha Malik",sp:"Gastroenterologist",ex:11,fee:700,av:"Mon-Sat 10am-5pm"},m:[{n:"Omeprazole 20mg",d:"1 cap before breakfast",dur:"30 days"},{n:"Antacid syrup",d:"10ml after meals",dur:"as needed"}],r:"Don't lie down after eating, elevate head",di:"Avoid coffee, citrus, spicy; eat oats, vegetables"},
+ {n:"Peptic Ulcer",c:"Digestive",i:"fa-stomach",s:["burning stomach pain","bloating","nausea","loss of appetite","weight loss"],dr:{n:"Dr. Ayesha Malik",sp:"Gastroenterologist",ex:11,fee:800,av:"Mon-Sat 10am-5pm"},m:[{n:"Pantoprazole 40mg",d:"1 tab x 2/day",dur:"30 days"},{n:"Clarithromycin 500mg",d:"1 tab x 2/day",dur:"14 days"}],r:"Stop NSAIDs, no smoking, manage stress",di:"Avoid alcohol, spicy; eat fiber, lean protein"},
+ {n:"Diarrhea",c:"Digestive",i:"fa-toilet",s:["loose stools","abdominal cramps","dehydration","nausea","weakness"],dr:{n:"Dr. Ayesha Malik",sp:"Gastroenterologist",ex:11,fee:500,av:"Mon-Sat 10am-5pm"},m:[{n:"ORS sachets",d:"1 sachet in 1L water",dur:"as needed"},{n:"Loperamide 2mg",d:"1 tab after each loose stool",dur:"3 days"}],r:"Hydration, rest, hand hygiene",di:"BRAT diet (banana, rice, apple, toast)"},
+ {n:"Constipation",c:"Digestive",i:"fa-stomach",s:["difficulty passing stool","bloating","abdominal pain","hard stools","loss of appetite"],dr:{n:"Dr. Ayesha Malik",sp:"Gastroenterologist",ex:11,fee:500,av:"Mon-Sat 10am-5pm"},m:[{n:"Lactulose syrup",d:"15ml at night",dur:"7 days"},{n:"Isabgol",d:"1 tsp at night",dur:"ongoing"}],r:"Daily exercise, regular toilet routine",di:"High-fiber: fruits, vegetables, water 3L/day"},
+ {n:"IBS",c:"Digestive",i:"fa-stomach",s:["abdominal cramps","bloating","diarrhea","constipation","gas"],dr:{n:"Dr. Ayesha Malik",sp:"Gastroenterologist",ex:11,fee:800,av:"Mon-Sat 10am-5pm"},m:[{n:"Mebeverine 135mg",d:"1 tab x 3/day",dur:"30 days"},{n:"Probiotics",d:"1 cap/day",dur:"30 days"}],r:"Stress management, yoga, sleep",di:"Low FODMAP, avoid dairy/gluten, small meals"},
+ {n:"Food Poisoning",c:"Digestive",i:"fa-burger",s:["nausea","vomiting","diarrhea","stomach pain","fever","weakness"],dr:{n:"Dr. Ayesha Malik",sp:"Gastroenterologist",ex:11,fee:500,av:"Mon-Sat 10am-5pm"},m:[{n:"ORS sachets",d:"1 in 1L water",dur:"as needed"},{n:"Ondansetron 4mg",d:"1 tab x 2/day",dur:"3 days"}],r:"Hydration, rest, food hygiene",di:"Bland diet, avoid dairy/oily; clear fluids"},
+ {n:"Migraine",c:"Neurological",i:"fa-head-side-virus",s:["throbbing headache","nausea","light sensitivity","visual disturbance","sound sensitivity"],dr:{n:"Dr. Fatima Zahra",sp:"Neurologist",ex:14,fee:1000,av:"Tue-Fri 11am-4pm"},m:[{n:"Sumatriptan 50mg",d:"1 tab at onset",dur:"as needed"},{n:"Naproxen 500mg",d:"1 tab x 2/day",dur:"3 days"}],r:"Dark quiet room, sleep, identify triggers",di:"Avoid cheese/chocolate/caffeine; magnesium foods"},
+ {n:"Tension Headache",c:"Neurological",i:"fa-head-side-virus",s:["dull headache","neck stiffness","scalp tenderness","fatigue","mild stress"],dr:{n:"Dr. Fatima Zahra",sp:"Neurologist",ex:14,fee:800,av:"Tue-Fri 11am-4pm"},m:[{n:"Ibuprofen 400mg",d:"1 tab x 2/day",dur:"3 days"}],r:"Stretching, posture correction, relaxation",di:"Stay hydrated, balanced meals"},
+ {n:"Epilepsy",c:"Neurological",i:"fa-bolt",s:["seizures","loss of consciousness","muscle stiffness","confusion","staring spells"],dr:{n:"Dr. Fatima Zahra",sp:"Neurologist",ex:14,fee:1200,av:"Tue-Fri 11am-4pm"},m:[{n:"Levetiracetam 500mg",d:"1 tab x 2/day",dur:"long-term"},{n:"Sodium Valproate 200mg",d:"1 tab x 2/day",dur:"long-term"}],r:"Avoid triggers, sleep regularly, no driving",di:"Ketogenic diet may help; avoid alcohol"},
+ {n:"Stroke",c:"Neurological",i:"fa-brain",s:["sudden weakness","slurred speech","facial droop","confusion","vision loss","severe headache"],dr:{n:"Dr. Fatima Zahra",sp:"Neurologist",ex:14,fee:1500,av:"Emergency"},m:[{n:"Aspirin 75mg",d:"1 tab/day",dur:"long-term"},{n:"Atorvastatin 40mg",d:"1 tab at night",dur:"long-term"}],r:"Rehab, physiotherapy, BP control",di:"Low salt, low fat, Mediterranean diet"},
+ {n:"Hypertension",c:"Cardiac",i:"fa-heart-pulse",s:["headache","dizziness","blurred vision","chest pain","shortness of breath"],dr:{n:"Dr. Asif Nawaz",sp:"Cardiologist",ex:18,fee:1000,av:"Mon-Sat 10am-2pm"},m:[{n:"Amlodipine 5mg",d:"1 tab/day",dur:"long-term"},{n:"Losartan 50mg",d:"1 tab/day",dur:"long-term"}],r:"Daily walking 30min, weight control, no smoking",di:"Low salt (<5g/day), DASH diet, less caffeine"},
+ {n:"Coronary Artery Disease",c:"Cardiac",i:"fa-heart",s:["chest pain","shortness of breath","fatigue","palpitations","sweating"],dr:{n:"Dr. Asif Nawaz",sp:"Cardiologist",ex:18,fee:1200,av:"Mon-Sat 10am-2pm"},m:[{n:"Aspirin 75mg",d:"1 tab/day",dur:"long-term"},{n:"Atorvastatin 40mg",d:"1 tab at night",dur:"long-term"}],r:"Cardiac rehab, no smoking, exercise",di:"Mediterranean diet, low saturated fat"},
+ {n:"Heart Attack",c:"Cardiac",i:"fa-heart-circle-bolt",s:["severe chest pain","arm pain","shortness of breath","sweating","nausea","dizziness"],dr:{n:"Dr. Asif Nawaz",sp:"Cardiologist",ex:18,fee:2000,av:"Emergency"},m:[{n:"Aspirin 325mg",d:"chew at onset",dur:"once"},{n:"Clopidogrel 75mg",d:"1 tab/day",dur:"long-term"}],r:"Emergency hospitalization, cardiac rehab",di:"Heart-healthy diet, no fried foods"},
+ {n:"Arrhythmia",c:"Cardiac",i:"fa-wave-square",s:["palpitations","dizziness","chest discomfort","fatigue","shortness of breath"],dr:{n:"Dr. Asif Nawaz",sp:"Cardiologist",ex:18,fee:1200,av:"Mon-Sat 10am-2pm"},m:[{n:"Metoprolol 50mg",d:"1 tab x 2/day",dur:"long-term"}],r:"Avoid caffeine, manage stress",di:"Limit alcohol; potassium-rich foods"},
+ {n:"Diabetes Type 2",c:"Endocrine",i:"fa-droplet",s:["frequent urination","excessive thirst","fatigue","blurred vision","slow healing"],dr:{n:"Dr. Mariam Yousuf",sp:"Endocrinologist",ex:13,fee:900,av:"Mon-Fri 10am-3pm"},m:[{n:"Metformin 500mg",d:"1 tab x 2/day with meals",dur:"long-term"},{n:"Glimepiride 1mg",d:"1 tab before breakfast",dur:"long-term"}],r:"Daily walk, weight loss, glucose monitoring",di:"Low carb, high fiber; avoid sugar/refined flour"},
+ {n:"Hypothyroidism",c:"Endocrine",i:"fa-droplet",s:["fatigue","weight gain","cold intolerance","dry skin","hair loss","constipation"],dr:{n:"Dr. Mariam Yousuf",sp:"Endocrinologist",ex:13,fee:800,av:"Mon-Fri 10am-3pm"},m:[{n:"Levothyroxine 50mcg",d:"1 tab empty stomach",dur:"long-term"}],r:"Regular thyroid tests, exercise",di:"Iodine-rich foods, avoid excess soy/cabbage"},
+ {n:"PCOS",c:"Endocrine",i:"fa-venus",s:["irregular periods","acne","weight gain","hair growth","fatigue"],dr:{n:"Dr. Hina Baig",sp:"Gynecologist",ex:12,fee:900,av:"Tue-Sat 11am-5pm"},m:[{n:"Metformin 500mg",d:"1 tab x 2/day",dur:"long-term"},{n:"Oral contraceptives",d:"as prescribed",dur:"long-term"}],r:"Weight loss, regular exercise",di:"Low GI diet, high protein, less sugar"},
+ {n:"Malaria",c:"Infectious",i:"fa-mosquito",s:["high fever","chills","sweating","headache","body ache","nausea"],dr:{n:"Dr. Tariq Mahmood",sp:"General Physician",ex:8,fee:500,av:"Mon-Sat 10am-6pm"},m:[{n:"Artemether-Lumefantrine",d:"as per weight",dur:"3 days"},{n:"Paracetamol 650mg",d:"1 tab x 3/day",dur:"5 days"}],r:"Mosquito nets, repellents, hydration",di:"Light meals, fluids, fruit juices"},
+ {n:"Dengue",c:"Infectious",i:"fa-mosquito",s:["high fever","severe headache","joint pain","rash","nausea","eye pain"],dr:{n:"Dr. Tariq Mahmood",sp:"General Physician",ex:8,fee:600,av:"Mon-Sat 10am-6pm"},m:[{n:"Paracetamol 500mg",d:"1 tab x 4/day",dur:"5 days"},{n:"ORS",d:"as needed",dur:"7 days"}],r:"Bed rest, mosquito control, monitor platelets",di:"Papaya leaf juice, fluids, kiwi, pomegranate"},
+ {n:"Typhoid",c:"Infectious",i:"fa-bacterium",s:["prolonged fever","abdominal pain","weakness","loss of appetite","headache","constipation"],dr:{n:"Dr. Tariq Mahmood",sp:"General Physician",ex:8,fee:600,av:"Mon-Sat 10am-6pm"},m:[{n:"Ceftriaxone IV",d:"1g x 2/day",dur:"7 days"},{n:"Azithromycin 500mg",d:"1 tab/day",dur:"7 days"}],r:"Bed rest, hand hygiene, safe water",di:"Soft, easily digestible food; avoid raw foods"},
+ {n:"COVID-19",c:"Infectious",i:"fa-virus-covid",s:["fever","dry cough","loss of taste","loss of smell","fatigue","shortness of breath"],dr:{n:"Dr. Tariq Mahmood",sp:"General Physician",ex:8,fee:500,av:"Mon-Sat 10am-6pm"},m:[{n:"Paracetamol 500mg",d:"1 tab x 3/day",dur:"5 days"},{n:"Vitamin C 500mg",d:"1 tab x 2/day",dur:"10 days"}],r:"Isolate, monitor SpO2, rest",di:"Warm fluids, vitamin-rich diet"},
+ {n:"Chickenpox",c:"Infectious",i:"fa-spray-can",s:["itchy rash","fever","fatigue","loss of appetite","headache"],dr:{n:"Dr. Tariq Mahmood",sp:"General Physician",ex:8,fee:400,av:"Mon-Sat 10am-6pm"},m:[{n:"Acyclovir 800mg",d:"1 tab x 5/day",dur:"7 days"},{n:"Calamine lotion",d:"apply on rash",dur:"as needed"}],r:"Isolation, oatmeal baths, no scratching",di:"Soft cool foods, avoid spicy"},
+ {n:"Hepatitis B",c:"Infectious",i:"fa-bacterium",s:["jaundice","fatigue","abdominal pain","nausea","dark urine","loss of appetite"],dr:{n:"Dr. Ayesha Malik",sp:"Gastroenterologist",ex:11,fee:900,av:"Mon-Sat 10am-5pm"},m:[{n:"Tenofovir 300mg",d:"1 tab/day",dur:"long-term"}],r:"No alcohol, regular followup, vaccinate family",di:"Low fat, no alcohol, fresh fruits/vegetables"},
+ {n:"UTI",c:"Urinary",i:"fa-toilet",s:["burning urination","frequent urination","cloudy urine","pelvic pain","fever"],dr:{n:"Dr. Bilal Siddiqui",sp:"Urologist",ex:10,fee:700,av:"Mon-Fri 10am-3pm"},m:[{n:"Nitrofurantoin 100mg",d:"1 tab x 2/day",dur:"5 days"},{n:"Phenazopyridine 100mg",d:"1 tab x 3/day",dur:"3 days"}],r:"Hydration, hygiene, urinate after intercourse",di:"Cranberry juice, lots of water; avoid caffeine"},
+ {n:"Kidney Stones",c:"Urinary",i:"fa-stone",s:["severe back pain","blood in urine","nausea","painful urination","frequent urination"],dr:{n:"Dr. Bilal Siddiqui",sp:"Urologist",ex:10,fee:900,av:"Mon-Fri 10am-3pm"},m:[{n:"Tamsulosin 0.4mg",d:"1 tab at night",dur:"30 days"},{n:"Diclofenac 50mg",d:"1 tab x 2/day",dur:"5 days"}],r:"Drink 3L water/day, light exercise",di:"Reduce salt/oxalate; lemon water, calcium"},
+ {n:"Eczema",c:"Skin",i:"fa-hand-dots",s:["itchy skin","redness","dry patches","skin cracking","inflammation"],dr:{n:"Dr. Zara Ahmed",sp:"Dermatologist",ex:9,fee:600,av:"Mon-Sat 11am-6pm"},m:[{n:"Hydrocortisone cream",d:"apply x 2/day",dur:"14 days"},{n:"Cetirizine 10mg",d:"1 tab at night",dur:"14 days"}],r:"Moisturize daily, avoid hot water",di:"Avoid dairy/eggs if triggers; omega-3 rich"},
+ {n:"Acne",c:"Skin",i:"fa-face-grimace",s:["pimples","oily skin","blackheads","whiteheads","skin redness"],dr:{n:"Dr. Zara Ahmed",sp:"Dermatologist",ex:9,fee:500,av:"Mon-Sat 11am-6pm"},m:[{n:"Adapalene gel",d:"apply at night",dur:"3 months"},{n:"Doxycycline 100mg",d:"1 cap/day",dur:"30 days"}],r:"Wash face 2x/day, no picking, sunscreen",di:"Low GI diet, less dairy; water, fruits"},
+ {n:"Psoriasis",c:"Skin",i:"fa-hand-dots",s:["red patches","silver scales","itching","dry skin","joint pain"],dr:{n:"Dr. Zara Ahmed",sp:"Dermatologist",ex:9,fee:700,av:"Mon-Sat 11am-6pm"},m:[{n:"Methotrexate 7.5mg",d:"1/week",dur:"long-term"},{n:"Topical steroids",d:"apply x 2/day",dur:"as advised"}],r:"Sunlight exposure, stress management",di:"Anti-inflammatory: fish, turmeric; avoid alcohol"},
+ {n:"Fungal Infection",c:"Skin",i:"fa-bacterium",s:["itching","redness","skin patches","scaling","ring-shaped rash"],dr:{n:"Dr. Zara Ahmed",sp:"Dermatologist",ex:9,fee:500,av:"Mon-Sat 11am-6pm"},m:[{n:"Clotrimazole cream",d:"apply x 2/day",dur:"21 days"},{n:"Fluconazole 150mg",d:"1 tab/week",dur:"4 weeks"}],r:"Keep area dry, change clothes daily",di:"Less sugar; probiotics, garlic, yogurt"},
+ {n:"Arthritis",c:"Musculoskeletal",i:"fa-bone",s:["joint pain","stiffness","swelling","reduced motion","fatigue"],dr:{n:"Dr. Imran Qureshi",sp:"Rheumatologist",ex:15,fee:900,av:"Tue-Sat 10am-3pm"},m:[{n:"Diclofenac 50mg",d:"1 tab x 2/day",dur:"14 days"},{n:"Glucosamine",d:"1 cap x 2/day",dur:"3 months"}],r:"Low-impact exercise, weight control, hot/cold packs",di:"Anti-inflammatory; fish, turmeric, leafy greens"},
+ {n:"Osteoporosis",c:"Musculoskeletal",i:"fa-bone",s:["back pain","loss of height","stooped posture","easy fractures","weak bones"],dr:{n:"Dr. Imran Qureshi",sp:"Rheumatologist",ex:15,fee:900,av:"Tue-Sat 10am-3pm"},m:[{n:"Calcium 500mg + Vit D",d:"1 tab x 2/day",dur:"long-term"},{n:"Alendronate 70mg",d:"1/week",dur:"long-term"}],r:"Weight-bearing exercise, sunlight",di:"Dairy, leafy greens, almonds, fish"},
+ {n:"Gout",c:"Musculoskeletal",i:"fa-bone",s:["sudden joint pain","redness","swelling","warmth","tenderness"],dr:{n:"Dr. Imran Qureshi",sp:"Rheumatologist",ex:15,fee:800,av:"Tue-Sat 10am-3pm"},m:[{n:"Colchicine 0.5mg",d:"1 tab x 2/day",dur:"7 days"},{n:"Allopurinol 100mg",d:"1 tab/day",dur:"long-term"}],r:"Hydration, weight loss, no alcohol",di:"Avoid red meat, seafood, beer; cherries help"},
+ {n:"Back Pain",c:"Musculoskeletal",i:"fa-person",s:["lower back pain","stiffness","muscle spasms","reduced motion","leg pain"],dr:{n:"Dr. Imran Qureshi",sp:"Orthopedic",ex:15,fee:700,av:"Tue-Sat 10am-3pm"},m:[{n:"Ibuprofen 400mg",d:"1 tab x 2/day",dur:"7 days"},{n:"Muscle relaxant",d:"1 tab at night",dur:"5 days"}],r:"Posture correction, physiotherapy, stretches",di:"Calcium, vitamin D, magnesium-rich foods"},
+ {n:"Anxiety Disorder",c:"Mental",i:"fa-face-frown",s:["restlessness","rapid heartbeat","sweating","worry","difficulty concentrating","insomnia"],dr:{n:"Dr. Nadia Khan",sp:"Psychiatrist",ex:11,fee:1000,av:"Mon-Fri 11am-5pm"},m:[{n:"Escitalopram 10mg",d:"1 tab/day",dur:"long-term"},{n:"Clonazepam 0.25mg",d:"as needed",dur:"short-term"}],r:"Therapy, meditation, breathing exercises",di:"Less caffeine; magnesium, omega-3 foods"},
+ {n:"Depression",c:"Mental",i:"fa-face-sad-tear",s:["persistent sadness","loss of interest","fatigue","sleep changes","appetite changes","hopelessness"],dr:{n:"Dr. Nadia Khan",sp:"Psychiatrist",ex:11,fee:1000,av:"Mon-Fri 11am-5pm"},m:[{n:"Sertraline 50mg",d:"1 tab/day",dur:"long-term"}],r:"CBT, social support, exercise, sunlight",di:"Omega-3, whole grains; limit alcohol"},
+ {n:"Insomnia",c:"Mental",i:"fa-bed",s:["difficulty falling asleep","frequent waking","early waking","daytime fatigue","irritability"],dr:{n:"Dr. Nadia Khan",sp:"Psychiatrist",ex:11,fee:800,av:"Mon-Fri 11am-5pm"},m:[{n:"Melatonin 3mg",d:"1 tab at night",dur:"30 days"}],r:"Sleep hygiene, no screens before bed, fixed schedule",di:"Avoid caffeine after 4pm; warm milk, bananas"},
+ {n:"Conjunctivitis",c:"Eye/ENT",i:"fa-eye",s:["red eyes","itching","watery discharge","crusty eyelids","light sensitivity"],dr:{n:"Dr. Hassan Raza",sp:"Ophthalmologist",ex:10,fee:500,av:"Mon-Fri 9am-3pm"},m:[{n:"Moxifloxacin eye drops",d:"1 drop x 4/day",dur:"7 days"}],r:"Hand hygiene, no eye rubbing, separate towels",di:"Vitamin A foods: carrots, spinach"},
+ {n:"Otitis Media",c:"Eye/ENT",i:"fa-ear-listen",s:["ear pain","hearing loss","fever","ear discharge","irritability"],dr:{n:"Dr. Hassan Raza",sp:"ENT Specialist",ex:10,fee:600,av:"Mon-Fri 9am-3pm"},m:[{n:"Amoxicillin 500mg",d:"1 cap x 3/day",dur:"7 days"},{n:"Paracetamol 500mg",d:"1 tab x 3/day",dur:"5 days"}],r:"Keep ears dry, warm compress",di:"Vitamin C-rich foods, hydration"},
+ {n:"Tonsillitis",c:"Eye/ENT",i:"fa-mouth",s:["sore throat","difficulty swallowing","fever","swollen tonsils","bad breath"],dr:{n:"Dr. Hassan Raza",sp:"ENT Specialist",ex:10,fee:500,av:"Mon-Fri 9am-3pm"},m:[{n:"Amoxicillin 500mg",d:"1 cap x 3/day",dur:"7 days"},{n:"Lozenges",d:"1 every 3 hrs",dur:"5 days"}],r:"Warm salt water gargle, rest",di:"Soft cool foods, ice cream, broths"}
+];
+const QUICK_DISEASES = ["Heart Attack","Diabetes Type 2","Asthma","Typhoid","Dengue","Hypertension","Migraine","COVID-19"];
+const TIPS = [
+  "Drink 8 glasses of water daily for better metabolism.",
+  "Aim for 7-8 hours of quality sleep each night.",
+  "Take a 10-minute walk after every meal.",
+  "Eat 5 servings of fruits & vegetables every day.",
+  "Practice deep breathing for 5 minutes to reduce stress.",
+  "Limit screen time 1 hour before bed for better sleep.",
+  "Wash your hands regularly to prevent infections.",
+  "Don't skip breakfast — it fuels your morning.",
+  "Stretch for 5 minutes after waking up.",
+  "Reduce salt intake to keep blood pressure in check.",
+  "Stand up & move every 30 minutes if you sit a lot.",
+  "Sunlight for 15 mins gives essential Vitamin D."
+];
+
+/* ═══════════════════════════ API LAYER ═══════════════════════════ */
+const API_BASE = '/api';   // same-origin — served by Express
+let authToken  = localStorage.getItem('sdsc_token') || null;
+let serverOnline = false;
+
+const api = {
+  headers() {
+    const h = { 'Content-Type': 'application/json' };
+    if (authToken) h['Authorization'] = 'Bearer ' + authToken;
+    return h;
+  },
+  async call(method, path, body) {
+    try {
+      const res = await fetch(API_BASE + path, {
+        method,
+        headers: this.headers(),
+        credentials: 'include',
+        body: body ? JSON.stringify(body) : undefined
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Request failed');
+      return data;
+    } catch(e) {
+      throw e;
+    }
+  },
+  get:    (p)      => api.call('GET',    p),
+  post:   (p, b)   => api.call('POST',   p, b),
+  put:    (p, b)   => api.call('PUT',    p, b),
+  delete: (p)      => api.call('DELETE', p),
+};
+
+// Ping server
+async function checkServer() {
+  try {
+    const r = await fetch('/api/auth/me', { credentials: 'include',
+      headers: authToken ? { Authorization: 'Bearer ' + authToken } : {} });
+    serverOnline = true;
+  } catch {
+    serverOnline = false;
+  }
+  const badge = document.getElementById('apiBadge');
+  if (badge) {
+    badge.className = 'api-badge ' + (serverOnline ? 'online' : 'offline');
+    badge.innerHTML = `<i class="fa-solid fa-circle"></i> ${serverOnline ? 'server online' : 'server offline'}`;
+  }
+}
+
+/* ═══════════════════════════ STATE ═══════════════════════════ */
+const LS = { theme:'sdsc_theme', token:'sdsc_token' };
+const state = { user:null, currentDisease:null, selected:[], category:'All', lastResult:null };
+
+/* ═══════════════════════════ HELPERS ═══════════════════════════ */
+const $ = id => document.getElementById(id);
+function toast(msg, type='') {
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.innerHTML = `<i class="fa-solid ${type==='success'?'fa-circle-check':type==='error'?'fa-circle-exclamation':'fa-circle-info'}"></i> ${msg}`;
+  $('toastHolder').appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+}
+function uid() { return 'SLIP-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substr(2,4).toUpperCase(); }
+function setBtn(id, loading, label) {
+  const b = $(id); if (!b) return;
+  b.disabled = loading;
+  b.innerHTML = loading ? `<span class="loader"></span> ${label}` : label;
+}
+
+/* ═══════════════════════════ THEME ═══════════════════════════ */
+const theme = {
+  init() { const t = localStorage.getItem(LS.theme) || 'dark'; document.body.setAttribute('data-theme', t); this.icon(); },
+  toggle() { const n = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; document.body.setAttribute('data-theme', n); localStorage.setItem(LS.theme, n); this.icon(); },
+  icon() { const t = document.body.getAttribute('data-theme'); const b = $('themeBtn'); if (b) b.innerHTML = `<i class="fa-solid ${t==='dark'?'fa-moon':'fa-sun'}"></i>`; }
+};
+
+/* ═══════════════════════════ ROUTER ═══════════════════════════ */
+const router = {
+  go(p) {
+    document.querySelectorAll('.page').forEach(s => s.classList.add('hidden'));
+    $('page-' + p).classList.remove('hidden');
+    document.querySelectorAll('.nav-links button[data-route]').forEach(b => b.classList.toggle('active', b.dataset.route === p));
+    if (p === 'dashboard') app.renderDashboard();
+    if (p === 'history')   app.renderHistory();
+    window.scrollTo(0, 0);
+  }
+};
+
+/* ═══════════════════════════ AUTH ═══════════════════════════ */
+const auth = {
+  switchTab(t) {
+    $('tabSignin').classList.toggle('active', t === 'signin');
+    $('tabSignup').classList.toggle('active', t === 'signup');
+    $('signinForm').classList.toggle('hidden', t !== 'signin');
+    $('signupForm').classList.toggle('hidden', t !== 'signup');
+  },
+
+  async signUp() {
+    const name     = $('suName').value.trim();
+    const age      = $('suAge').value;
+    const gender   = $('suGender').value;
+    const username = $('suUser').value.trim();
+    const password = $('suPass').value;
+    const errEl    = $('suErr');
+    errEl.classList.remove('show');
+
+    if (!name || !age || !gender || !username || !password) { errEl.textContent = 'All fields are required.'; errEl.classList.add('show'); return; }
+    if (password.length < 4)                                 { errEl.textContent = 'Password must be at least 4 characters.'; errEl.classList.add('show'); return; }
+
+    setBtn('suBtn', true, 'Creating account…');
+    try {
+      const data = await api.post('/auth/register', { fullName: name, age: parseInt(age), gender, username, password });
+      toast('Account created successfully! Please sign in. 🎉', 'success');
+      auth.switchTab('signin');
+    } catch(e) {
+      errEl.textContent = e.message;
+      errEl.classList.add('show');
+    } finally {
+      setBtn('suBtn', false, '<i class="fa-solid fa-user-plus"></i> Create Account');
+    }
+  },
+
+  async signIn() {
+    const username = $('siUser').value.trim();
+    const password = $('siPass').value;
+    const errEl    = $('siErr');
+    errEl.classList.remove('show');
+
+    if (!username || !password) { errEl.textContent = 'Please enter username and password.'; errEl.classList.add('show'); return; }
+
+    setBtn('siBtn', true, 'Signing in…');
+    try {
+      const data = await api.post('/auth/login', { username, password });
+      authToken = data.token;
+      localStorage.setItem(LS.token, authToken);
+      state.user = data.user;
+      toast('Welcome back, ' + data.user.name.split(' ')[0] + '!', 'success');
+      auth.buildNav();
+      router.go('dashboard');
+    } catch(e) {
+      errEl.textContent = e.message;
+      errEl.classList.add('show');
+    } finally {
+      setBtn('siBtn', false, '<i class="fa-solid fa-right-to-bracket"></i> Sign In');
+    }
+  },
+
+  async signOut() {
+    try { await api.post('/auth/logout'); } catch {}
+    authToken = null;
+    state.user = null;
+    localStorage.removeItem(LS.token);
+    auth.buildNav();
+    router.go('auth');
+    toast('Signed out successfully');
+  },
+
+  buildNav() {
+    const c = $('navLinks');
+    if (state.user) {
+      c.innerHTML = `
+        <button data-route="dashboard" onclick="router.go('dashboard')"><i class="fa-solid fa-house"></i> Dashboard</button>
+        <button data-route="history" onclick="router.go('history')"><i class="fa-solid fa-clock-rotate-left"></i> History</button>
+        <button onclick="auth.signOut()"><i class="fa-solid fa-right-from-bracket"></i> ${state.user.name.split(' ')[0]}</button>
+        <button onclick="theme.toggle()" id="themeBtn"></button>`;
+    } else {
+      c.innerHTML = `<button onclick="theme.toggle()" id="themeBtn"></button>`;
+    }
+    theme.icon();
+  }
+};
+
+/* ═══════════════════════════ APP ═══════════════════════════ */
+const app = {
+  renderDashboard() {
+    // Profile badge
+    if (state.user) {
+      const initials = state.user.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+      $('profileBadgeWrap').innerHTML = `
+        <div class="profile-badge glass">
+          <div class="profile-avatar">${initials}</div>
+          <div class="profile-info">
+            <div class="pname">${state.user.name}</div>
+            <div class="pmeta">${state.user.gender} · ${state.user.age} yrs · @${state.user.username}</div>
+          </div>
+        </div>`;
+    }
+    // Category tabs
+    const ct = $('catTabs'); ct.innerHTML = '';
+    CATEGORIES.forEach(c => {
+      const b = document.createElement('button');
+      b.textContent = c;
+      if (c === state.category) b.classList.add('active');
+      b.onclick = () => { state.category = c; app.renderDashboard(); };
+      ct.appendChild(b);
+    });
+    // Disease grid
+    const dg = $('diseaseGrid'); dg.innerHTML = '';
+    const list = state.category === 'All' ? DISEASES : DISEASES.filter(d => d.c === state.category);
+    list.forEach(d => {
+      const card = document.createElement('div');
+      card.className = 'disease-card' + (state.currentDisease === d.n ? ' selected' : '');
+      card.innerHTML = `<i class="fa-solid ${d.i}"></i><div class="nm">${d.n}</div><div class="ct">${d.c}</div>`;
+      card.onclick = () => { state.currentDisease = d.n; app.renderSymptoms(); app.renderDashboard(); };
+      dg.appendChild(card);
+    });
+    // Quick list
+    const q = $('quickList'); q.innerHTML = '';
+    QUICK_DISEASES.forEach(n => {
+      const d = DISEASES.find(x => x.n === n); if (!d) return;
+      const it = document.createElement('div');
+      it.className = 'quick-item';
+      it.innerHTML = `<div><div class="nm"><i class="fa-solid ${d.i}"></i> ${d.n}</div><div class="sub">${d.dr.sp}</div></div><i class="fa-solid fa-chevron-right" style="color:var(--muted)"></i>`;
+      it.onclick = () => app.quickShow(d);
+      q.appendChild(it);
+    });
+    // Tip
+    $('dailyTip').textContent = TIPS[Math.floor(Math.random() * TIPS.length)];
+    app.renderSymptoms();
+    app.renderSelected();
+  },
+
+  renderSymptoms() {
+    const list = $('symptomList');
+    if (!state.currentDisease) { list.innerHTML = '<p style="color:var(--muted);font-size:.9rem">Click any disease above to view its symptoms.</p>'; $('curDiseaseLbl').textContent = ''; return; }
+    const d = DISEASES.find(x => x.n === state.currentDisease);
+    $('curDiseaseLbl').textContent = '— ' + d.n;
+    list.innerHTML = '';
+    d.s.forEach(sym => {
+      const isOn = state.selected.includes(sym);
+      const item = document.createElement('label');
+      item.className = 'symptom-item' + (isOn ? ' checked' : '');
+      item.innerHTML = `<input type="checkbox" ${isOn ? 'checked' : ''}/> <span>${sym}</span><span class="symptom-meta">${d.n}</span>`;
+      item.querySelector('input').onchange = e => {
+        if (e.target.checked) { if (!state.selected.includes(sym)) state.selected.push(sym); }
+        else { state.selected = state.selected.filter(x => x !== sym); }
+        app.renderSelected(); app.renderSymptoms();
+      };
+      list.appendChild(item);
+    });
+  },
+
+  renderSelected() {
+    const c = $('selectedSymptoms'); c.innerHTML = '';
+    if (!state.selected.length) { c.innerHTML = '<span style="color:var(--muted);font-size:.85rem">No symptoms selected</span>'; return; }
+    state.selected.forEach(s => {
+      const ch = document.createElement('span');
+      ch.className = 'chip';
+      const safe = s.replace(/'/g, "\\'");
+      ch.innerHTML = `${s} <i class="fa-solid fa-xmark" onclick="app.removeSymptom('${safe}')"></i>`;
+      c.appendChild(ch);
+    });
+  },
+
+  removeSymptom(s) { state.selected = state.selected.filter(x => x !== s); app.renderSelected(); app.renderSymptoms(); },
+  clearSelection() { state.selected = []; state.lastResult = null; $('resultArea').innerHTML = ''; app.renderSelected(); app.renderSymptoms(); },
+
+  searchSymptom() {
+    const q = $('symptomSearch').value.trim().toLowerCase();
+    const r = $('searchResults'); r.innerHTML = '';
+    if (q.length < 2) return;
+    const matches = DISEASES.filter(d => d.s.some(s => s.includes(q))).slice(0, 6);
+    if (!matches.length) { r.innerHTML = '<div style="color:var(--muted);font-size:.85rem">No matches found</div>'; return; }
+    matches.forEach(d => {
+      const matched = d.s.filter(s => s.includes(q));
+      const div = document.createElement('div');
+      div.className = 'quick-item';
+      const safe = d.n.replace(/'/g, "\\'");
+      div.innerHTML = `<div><div class="nm"><i class="fa-solid ${d.i}"></i> ${d.n}</div><div class="sub">Matches: ${matched.join(', ')}</div></div><button class="btn sm" onclick="app.prefill('${safe}','${q}')">Check</button>`;
+      r.appendChild(div);
+    });
+  },
+
+  prefill(diseaseName, query) {
+    const d = DISEASES.find(x => x.n === diseaseName); if (!d) return;
+    state.currentDisease = d.n;
+    d.s.filter(s => s.includes(query)).forEach(s => { if (!state.selected.includes(s)) state.selected.push(s); });
+    app.renderDashboard();
+    $('symptomList').scrollIntoView({ behavior: 'smooth' });
+  },
+
+  quickShow(d) {
+    const tests = {"Heart Attack":["ECG","Troponin","Echocardiogram"],"Diabetes Type 2":["Fasting Glucose","HbA1c","OGTT"],"Asthma":["Spirometry","Peak Flow","Allergy Test"],"Typhoid":["Widal Test","Blood Culture"],"Dengue":["NS1 Antigen","CBC","Platelet Count"],"Hypertension":["BP Monitoring","ECG","Lipid Profile"],"Migraine":["Clinical Eval","CT/MRI if severe"],"COVID-19":["RT-PCR","Rapid Antigen","CT Chest"]}[d.n] || ["Clinical Evaluation"];
+    const safe = d.n.replace(/'/g,"\\'");
+    document.body.insertAdjacentHTML('beforeend', `
+      <div class="modal-back" onclick="if(event.target===this)this.remove()">
+        <div class="modal">
+          <div class="modal-head"><h3><i class="fa-solid ${d.i}"></i> ${d.n}</h3><button class="x" onclick="this.closest('.modal-back').remove()"><i class="fa-solid fa-xmark"></i></button></div>
+          <div class="modal-body">
+            <div class="info-grid">
+              <div class="info-block"><h4><i class="fa-solid fa-list"></i> Symptoms</h4><ul>${d.s.map(s=>`<li>${s}</li>`).join('')}</ul></div>
+              <div class="info-block"><h4><i class="fa-solid fa-vial"></i> Recommended Tests</h4><ul>${tests.map(t=>`<li>${t}</li>`).join('')}</ul></div>
+              <div class="info-block"><h4><i class="fa-solid fa-user-doctor"></i> Doctor</h4><ul><li>${d.dr.sp}</li><li>${d.dr.n} (${d.dr.ex} yrs exp)</li><li>Fee: Rs.${d.dr.fee}</li></ul></div>
+            </div>
+            <div style="margin-top:1.2rem;display:flex;gap:.5rem">
+              <button class="btn" onclick="app.fromQuick('${safe}')"><i class="fa-solid fa-stethoscope"></i> Check Symptoms</button>
+              <button class="btn ghost" onclick="this.closest('.modal-back').remove()">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>`);
+  },
+
+  fromQuick(name) {
+    const d = DISEASES.find(x => x.n === name); if (!d) return;
+    state.currentDisease = d.n;
+    d.s.slice(0, 3).forEach(s => { if (!state.selected.includes(s)) state.selected.push(s); });
+    document.querySelector('.modal-back')?.remove();
+    app.renderDashboard();
+    $('symptomList').scrollIntoView({ behavior: 'smooth' });
+  },
+
+  voiceInput() {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) return toast('Voice not supported in this browser', 'error');
+    const r = new SR(); r.lang = 'en-US'; r.continuous = false;
+    toast('Listening… say a symptom');
+    r.start();
+    r.onresult = e => {
+      const txt = e.results[0][0].transcript.toLowerCase();
+      $('symptomSearch').value = txt; app.searchSymptom();
+      const matched = [];
+      DISEASES.forEach(d => d.s.forEach(s => { if (txt.includes(s) && !state.selected.includes(s)) { state.selected.push(s); matched.push(s); } }));
+      if (matched.length) { toast('Added: ' + matched.join(', '), 'success'); app.renderSelected(); app.renderSymptoms(); }
+      else toast('Heard: "' + txt + '" — see search results');
+    };
+    r.onerror = () => toast('Voice input failed', 'error');
+  },
+
+  analyze() {
+    if (!state.selected.length) return toast('Select at least 1 symptom', 'error');
+    const scored = DISEASES.map(d => {
+      const matches = state.selected.filter(s => d.s.includes(s)).length;
+      const score = (matches / d.s.length * 0.5 + matches / state.selected.length * 0.5) * 100;
+      return { d, matches, score };
+    }).filter(x => x.matches > 0).sort((a, b) => b.score - a.score);
+    if (!scored.length) return toast('No disease matches selected symptoms', 'error');
+    const top = scored[0];
+    const conf = Math.min(99, Math.round(top.score));
+    state.lastResult = { disease: top.d, confidence: conf, matched: state.selected.filter(s => top.d.s.includes(s)), alts: scored.slice(1, 4) };
+    app.renderResult();
+  },
+
+  renderResult() {
+    const r = state.lastResult; if (!r) return;
+    const d = r.disease;
+    $('resultArea').innerHTML = `
+      <div class="result-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem">
+          <div><div style="font-size:.8rem;color:var(--accent);font-weight:600">AI PREDICTION</div><h3><i class="fa-solid ${d.i}"></i> ${d.n}</h3></div>
+          <div style="text-align:right"><div style="font-size:.75rem;color:var(--muted)">Confidence</div><div style="font-size:1.4rem;font-weight:700;color:var(--success)">${r.confidence}%</div></div>
+        </div>
+        <div class="confidence"><div class="confidence-bar" style="width:${r.confidence}%"></div></div>
+        <div style="font-size:.85rem;color:var(--muted)">Matched: ${r.matched.join(', ')}</div>
+        ${r.alts.length ? `<div style="font-size:.8rem;color:var(--muted);margin-top:.4rem">Other possibilities: ${r.alts.map(a=>a.d.n+' ('+Math.round(a.score)+'%)').join(', ')}</div>` : ''}
+        <div class="info-grid">
+          <div class="info-block"><h4><i class="fa-solid fa-user-doctor"></i> Doctor</h4><ul><li><b>${d.dr.n}</b></li><li>${d.dr.sp}</li><li>${d.dr.ex} yrs experience</li><li>Fee: Rs.${d.dr.fee}</li><li>${d.dr.av}</li></ul></div>
+          <div class="info-block"><h4><i class="fa-solid fa-pills"></i> Medicines</h4><ul>${d.m.map(x=>`<li><b>${x.n}</b> — ${x.d} (${x.dur})</li>`).join('')}</ul></div>
+          <div class="info-block"><h4><i class="fa-solid fa-bed"></i> Routine</h4><ul><li>${d.r}</li></ul></div>
+          <div class="info-block"><h4><i class="fa-solid fa-utensils"></i> Diet</h4><ul><li>${d.di}</li></ul></div>
+        </div>
+        <div style="margin-top:1rem;display:flex;gap:.5rem;flex-wrap:wrap">
+          <button class="btn success" onclick="app.generateSlip()"><i class="fa-solid fa-file-prescription"></i> Generate Medical Slip</button>
+        </div>
+      </div>`;
+    $('resultArea').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  },
+
+  async generateSlip() {
+    const r = state.lastResult; if (!r) return;
+    const d = r.disease, u = state.user;
+    const slip = {
+      id: uid(), date: new Date().toISOString(),
+      userName: u.name, age: u.age, gender: u.gender,
+      disease: d.n, confidence: r.confidence,
+      doctor: d.dr, medicines: d.m, routine: d.r, diet: d.di, symptoms: r.matched
+    };
+
+    // Save to MySQL via API
+    try {
+      await api.post('/slips', {
+        id: slip.id,
+        disease_name: d.n,
+        confidence:   r.confidence,
+        symptoms:     r.matched,
+        doctor_info:  d.dr,
+        medicines:    d.m,
+        routine:      d.r,
+        diet:         d.di
+      });
+      toast('Medical slip saved to database ✓', 'success');
+    } catch(e) {
+      toast('Slip generated (save failed: ' + e.message + ')', 'error');
+    }
+
+    app.showSlip(slip);
+  },
+
+  showSlip(slip) {
+    const dt = new Date(slip.date || slip.created_at).toLocaleString();
+    const id = slip.id;
+    // Normalise field names from DB vs local
+    const doctor   = slip.doctor   || slip.doctor_info;
+    const medicines = slip.medicines;
+    const symptoms  = slip.symptoms;
+    const routine  = slip.routine;
+    const diet     = slip.diet;
+    const disease  = slip.disease  || slip.disease_name;
+    const conf     = slip.confidence;
+
+    document.body.insertAdjacentHTML('beforeend', `
+      <div class="modal-back" onclick="if(event.target===this)this.remove()">
+        <div class="modal">
+          <div class="modal-head"><h3><i class="fa-solid fa-file-prescription"></i> Medical Slip</h3><button class="x" onclick="this.closest('.modal-back').remove()"><i class="fa-solid fa-xmark"></i></button></div>
+          <div class="modal-body">
+            <div id="slip-${id}" class="slip">
+              <div class="slip-head">
+                <div><h2><i class="fa-solid fa-stethoscope"></i> Smart Disease Symptoms Checker</h2><div style="font-size:.75rem;color:#64748b">AI-Assisted Medical Consultation Slip</div></div>
+                <div class="id"><b>ID:</b> ${id}<br/><b>Date:</b> ${dt}</div>
+              </div>
+              <div class="slip-row">
+                <div><b>Patient:</b> ${slip.userName || state.user?.name || 'N/A'}</div>
+                <div><b>Age/Gender:</b> ${slip.age || state.user?.age || '—'} / ${slip.gender || state.user?.gender || '—'}</div>
+                <div><b>Diagnosis:</b> ${disease}</div>
+                <div><b>AI Confidence:</b> ${conf}%</div>
+              </div>
+              <h3>Reported Symptoms</h3><ul>${symptoms.map(s=>`<li>${s}</li>`).join('')}</ul>
+              <h3>Consulting Doctor</h3>
+              <div style="font-size:.88rem">${doctor.n} — ${doctor.sp} (${doctor.ex} yrs)<br/>Consultation Fee: Rs.${doctor.fee} | ${doctor.av}</div>
+              <h3>Prescription</h3><ul>${medicines.map(m=>`<li><b>${m.n}</b> — ${m.d} for ${m.dur}</li>`).join('')}</ul>
+              <h3>Routine & Lifestyle</h3><ul><li>${routine}</li></ul>
+              <h3>Diet Plan</h3><ul><li>${diet}</li></ul>
+              <div class="slip-footer">This is a computer-generated slip for reference only. Please consult a licensed physician before taking any medication.</div>
+            </div>
+            <div style="margin-top:1rem;display:flex;gap:.5rem;flex-wrap:wrap">
+              <button class="btn" onclick="app.downloadPDF('${id}')"><i class="fa-solid fa-file-pdf"></i> Download PDF</button>
+              <button class="btn ghost" onclick="app.downloadImage('${id}')"><i class="fa-solid fa-image"></i> Save as Image</button>
+              <button class="btn ghost" onclick="window.print()"><i class="fa-solid fa-print"></i> Print</button>
+            </div>
+          </div>
+        </div>
+      </div>`);
+  },
+
+  async downloadPDF(id) {
+    const el = document.getElementById('slip-' + id);
+    const canvas = await html2canvas(el, { scale: 2, backgroundColor: '#ffffff' });
+    const img = canvas.toDataURL('image/png');
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF('p','mm','a4');
+    const w = 210, h = canvas.height * w / canvas.width;
+    pdf.addImage(img, 'PNG', 0, 0, w, h);
+    pdf.save(id + '.pdf');
+    toast('PDF downloaded', 'success');
+  },
+
+  async downloadImage(id) {
+    const el = document.getElementById('slip-' + id);
+    const canvas = await html2canvas(el, { scale: 2, backgroundColor: '#ffffff' });
+    const a = document.createElement('a'); a.href = canvas.toDataURL('image/png'); a.download = id + '.png'; a.click();
+    toast('Image downloaded', 'success');
+  },
+
+  async renderHistory() {
+    const g = $('historyGrid');
+    g.innerHTML = '<div style="color:var(--muted);text-align:center;padding:2rem"><span class="loader"></span></div>';
+    try {
+      const data = await api.get('/slips');
+      if (!data.slips.length) {
+        g.innerHTML = `<div class="history-empty"><i class="fa-solid fa-folder-open"></i><p>No medical slips yet.</p><p style="font-size:.85rem;margin-top:.5rem">Generate one from the Dashboard.</p></div>`;
+        return;
+      }
+      g.innerHTML = data.slips.map(s => `
+        <div class="history-card">
+          <div class="d">${new Date(s.created_at).toLocaleString()}</div>
+          <h3>${s.disease_name}</h3>
+          <div class="meta"><i class="fa-solid fa-chart-simple"></i> Confidence: ${s.confidence}%</div>
+          <div class="meta"><i class="fa-solid fa-user-doctor"></i> ${s.doctor_info?.n || 'N/A'} (${s.doctor_info?.sp || ''})</div>
+          <div class="meta"><i class="fa-solid fa-pills"></i> ${(s.medicines||[]).map(m=>m.n).join(', ')}</div>
+          <div class="meta" style="font-size:.75rem;color:var(--muted)">ID: ${s.id}</div>
+          <div class="acts">
+            <button class="btn sm" onclick='app.viewSlip("${s.id}")'><i class="fa-solid fa-eye"></i> View</button>
+            <button class="btn sm danger" onclick='app.deleteSlip("${s.id}")'><i class="fa-solid fa-trash"></i> Delete</button>
+          </div>
+        </div>`).join('');
+    } catch(e) {
+      g.innerHTML = `<div class="history-empty"><i class="fa-solid fa-triangle-exclamation" style="color:var(--danger)"></i><p>Failed to load history: ${e.message}</p></div>`;
+    }
+  },
+
+  async viewSlip(id) {
+    try {
+      const data = await api.get('/slips/' + id);
+      // Reconstruct slip object compatible with showSlip
+      const s = data.slip;
+      app.showSlip({
+        id: s.id, date: s.created_at,
+        userName: state.user?.name, age: state.user?.age, gender: state.user?.gender,
+        disease: s.disease_name, confidence: s.confidence,
+        doctor: s.doctor_info, medicines: s.medicines, routine: s.routine, diet: s.diet,
+        symptoms: s.symptoms
+      });
+    } catch(e) { toast('Could not load slip: ' + e.message, 'error'); }
+  },
+
+  async deleteSlip(id) {
+    if (!confirm('Delete this slip permanently from the database?')) return;
+    try {
+      await api.delete('/slips/' + id);
+      toast('Slip deleted', 'success');
+      app.renderHistory();
+    } catch(e) { toast('Delete failed: ' + e.message, 'error'); }
+  }
+};
+
+/* ═══════════════════════════ INIT ═══════════════════════════ */
+theme.init();
+
+(async function init() {
+  await checkServer();
+
+  // Try to restore session from saved token
+  if (authToken) {
+    try {
+      const data = await api.get('/auth/me');
+      state.user = data.user;
+      auth.buildNav();
+      router.go('dashboard');
+    } catch {
+      authToken = null;
+      localStorage.removeItem(LS.token);
+      auth.buildNav();
+      router.go('auth');
+    }
+  } else {
+    auth.buildNav();
+    router.go('auth');
+  }
+
+  // Hide page loader
+  const loader = $('pageLoader');
+  loader.classList.add('fade');
+  setTimeout(() => loader.remove(), 600);
+})();
+</script>
+</body>
+</html>
