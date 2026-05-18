@@ -16,20 +16,27 @@ function signToken(user) {
 // ── POST /api/auth/register ──────────────────────────────────────────────────
 router.post('/register', async (req, res) => {
   try {
-    const { fullName, age, gender, username, password } = req.body;
+    const { fullName,email, age, gender, username, password } = req.body;
 
     // Basic validation
-    if (!fullName || !age || !gender || !username || !password) {
+    if (!fullName || !email ||  !age || !gender || !username || !password) {
       return res.status(400).json({ success: false, message: 'All fields are required' });
     }
-    if (password.length < 4) {
-      return res.status(400).json({ success: false, message: 'Password must be at least 4 characters' });
+    if (password.length < 8) {
+      return res.status(400).json({ success: false, message: 'Password must be at least 8 characters' });
     }
+
 
     // Check duplicate username
     const [rows] = await db.query('SELECT id FROM users WHERE username = ?', [username.toLowerCase()]);
     if (rows.length) {
       return res.status(409).json({ success: false, message: 'Username already taken' });
+    }
+    //email check
+
+    const [emailRows] = await db.query('SELECT id FROM users WHERE email = ?', [email.toLowerCase()]);
+    if (emailRows.length) {
+      return res.status(409).json({ success: false, message: 'Email already registered' });
     }
 
     // Hash password
@@ -37,8 +44,8 @@ router.post('/register', async (req, res) => {
 
     // Insert user
     const [result] = await db.query(
-      'INSERT INTO users (full_name, age, gender, username, password) VALUES (?, ?, ?, ?, ?)',
-      [fullName.trim(), parseInt(age), gender, username.trim().toLowerCase(), hash]
+      'INSERT INTO users (full_name, email, age, gender, username, password) VALUES (?, ?, ?, ?, ?, ?)',
+      [fullName.trim(), email.trim().toLowerCase(), parseInt(age), gender, username.trim().toLowerCase(), hash]
     );
 
     const user = { id: result.insertId, full_name: fullName, username: username.toLowerCase() };
@@ -49,7 +56,7 @@ router.post('/register', async (req, res) => {
       success: true,
       message: 'Account created',
       token,
-      user: { id: user.id, name: fullName, username: user.username, age: parseInt(age), gender }
+      user: { id: user.id, name: fullName,email: email.toLowerCase(), username: user.username, age: parseInt(age), gender }
     });
   } catch (err) {
     console.error('[register]', err);
@@ -60,20 +67,20 @@ router.post('/register', async (req, res) => {
 // ── POST /api/auth/login ─────────────────────────────────────────────────────
 router.post('/login', async (req, res) => {
   try {
-    const { username, password } = req.body;
-    if (!username || !password) {
-      return res.status(400).json({ success: false, message: 'Username and password are required' });
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ success: false, message: 'Email and password are required' });
     }
 
-    const [rows] = await db.query('SELECT * FROM users WHERE username = ?', [username.toLowerCase()]);
+   const [rows] = await db.query('SELECT * FROM users WHERE email = ?', [email.toLowerCase()]);
     if (!rows.length) {
-      return res.status(401).json({ success: false, message: 'Invalid username or password' });
+      return res.status(401).json({ success: false, message: 'Invalid email or password' });
     }
 
     const user = rows[0];
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
-      return res.status(401).json({ success: false, message: 'Invalid username or password' });
+      return res.status(401).json({ success: false, message: 'Invalid email or password' });
     }
 
     const token = signToken(user);
@@ -82,7 +89,7 @@ router.post('/login', async (req, res) => {
       success: true,
       message: 'Login successful',
       token,
-      user: { id: user.id, name: user.full_name, username: user.username, age: user.age, gender: user.gender }
+      user: { id: user.id, name: user.full_name, email: user.email, username: user.username, age: user.age, gender: user.gender }
     });
   } catch (err) {
     console.error('[login]', err);
@@ -100,12 +107,12 @@ router.post('/logout', (req, res) => {
 router.get('/me', require('../middleware/auth'), async (req, res) => {
   try {
     const [rows] = await db.query(
-      'SELECT id, full_name, age, gender, username, created_at FROM users WHERE id = ?',
+      'SELECT id, full_name, email, age, gender, username, created_at FROM users WHERE id = ?',
       [req.user.id]
     );
     if (!rows.length) return res.status(404).json({ success: false, message: 'User not found' });
     const u = rows[0];
-    res.json({ success: true, user: { id: u.id, name: u.full_name, username: u.username, age: u.age, gender: u.gender } });
+    res.json({ success: true, user: { id: u.id, name: u.full_name, email: u.email, username: u.username, age: u.age, gender: u.gender } });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Server error' });
   }

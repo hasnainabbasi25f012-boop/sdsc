@@ -210,7 +210,7 @@ nav.topnav{position:sticky;top:0;z-index:50;display:flex;align-items:center;just
   <div class="auth-wrap">
     <div class="auth-hero">
       <h1>Decode your symptoms.<br/>Discover your diagnosis.</h1>
-      <p>An AI-assisted symptom analyzer with 50+ diseases, doctor recommendations, prescription slips, and your full medical history — all backed by MySQL.</p>
+      <p>An AI-assisted symptom analyzer with 50+ diseases, doctor recommendations, prescription slips, and your full medical history.</p>
       <div class="feature-row">
         <div class="feature-pill"><i class="fa-solid fa-brain"></i> Smart Analysis</div>
         <div class="feature-pill"><i class="fa-solid fa-user-doctor"></i> Doctor Match</div>
@@ -226,7 +226,7 @@ nav.topnav{position:sticky;top:0;z-index:50;display:flex;align-items:center;just
 
       <!-- SIGN IN -->
       <div id="signinForm" class="form-grid">
-        <div><label>Username</label><input id="siUser" placeholder="your_username" autocomplete="username"/></div>
+        <div><label>Email</label><input id="siUser" type="email" placeholder="your@email.com" autocomplete="email"/></div>
         <div><label>Password</label><input id="siPass" type="password" placeholder="••••••••" autocomplete="current-password"/></div>
         <div class="err-msg" id="siErr"></div>
         <button class="btn" id="siBtn" onclick="auth.signIn()"><i class="fa-solid fa-right-to-bracket"></i> Sign In</button>
@@ -235,7 +235,7 @@ nav.topnav{position:sticky;top:0;z-index:50;display:flex;align-items:center;just
       <!-- SIGN UP -->
       <div id="signupForm" class="form-grid hidden">
         <div class="row2">
-          <div><label>Full Name</label><input id="suName" placeholder="John Doe"/></div>
+          <div><label>Full Name</label><input id="suName" placeholder="enter your full name"/></div>
           <div><label>Age</label><input id="suAge" type="number" min="1" max="120" placeholder="28"/></div>
         </div>
         <div class="row2">
@@ -244,9 +244,10 @@ nav.topnav{position:sticky;top:0;z-index:50;display:flex;align-items:center;just
               <option value="">Select</option><option>Male</option><option>Female</option><option>Other</option>
             </select>
           </div>
-          <div><label>Username</label><input id="suUser" placeholder="unique_username" autocomplete="username"/></div>
+          <div><label>Email</label><input id="suEmail" type="email" placeholder="your@email.com" autocomplete="email"/></div>
         </div>
-        <div><label>Password</label><input id="suPass" type="password" placeholder="Minimum 4 characters" autocomplete="new-password"/></div>
+        <div><label>Username</label><input id="suUser" placeholder="unique_username" autocomplete="username"/></div>
+        <div><label>Password</label><input id="suPass" type="password" placeholder="Minimum 8 characters" autocomplete="new-password"/></div>
         <div class="err-msg" id="suErr"></div>
         <button class="btn" id="suBtn" onclick="auth.signUp()"><i class="fa-solid fa-user-plus"></i> Create Account</button>
       </div>
@@ -493,6 +494,7 @@ const auth = {
 
   async signUp() {
     const name     = $('suName').value.trim();
+    const email    = $('suEmail').value.trim();
     const age      = $('suAge').value;
     const gender   = $('suGender').value;
     const username = $('suUser').value.trim();
@@ -500,12 +502,12 @@ const auth = {
     const errEl    = $('suErr');
     errEl.classList.remove('show');
 
-    if (!name || !age || !gender || !username || !password) { errEl.textContent = 'All fields are required.'; errEl.classList.add('show'); return; }
-    if (password.length < 4)                                 { errEl.textContent = 'Password must be at least 4 characters.'; errEl.classList.add('show'); return; }
+    if (!name || !email || !age || !gender || !username || !password) { errEl.textContent = 'All fields are required.'; errEl.classList.add('show'); return; }
+    if (password.length < 8)                                 { errEl.textContent = 'Password must be at least 8 characters.'; errEl.classList.add('show'); return; }
 
     setBtn('suBtn', true, 'Creating account…');
     try {
-      const data = await api.post('/auth/register', { fullName: name, age: parseInt(age), gender, username, password });
+      const data = await api.post('/auth/register', { fullName: name, email: email, age: parseInt(age), gender, username, password });
       toast('Account created successfully! Please sign in. 🎉', 'success');
       auth.switchTab('signin');
     } catch(e) {
@@ -517,16 +519,16 @@ const auth = {
   },
 
   async signIn() {
-    const username = $('siUser').value.trim();
+    const email = $('siUser').value.trim();
     const password = $('siPass').value;
     const errEl    = $('siErr');
     errEl.classList.remove('show');
 
-    if (!username || !password) { errEl.textContent = 'Please enter username and password.'; errEl.classList.add('show'); return; }
+    if (!email || !password) { errEl.textContent = 'Please enter email and password.'; errEl.classList.add('show'); return; }
 
     setBtn('siBtn', true, 'Signing in…');
     try {
-      const data = await api.post('/auth/login', { username, password });
+      const data = await api.post('/auth/login', { email, password });
       authToken = data.token;
       localStorage.setItem(LS.token, authToken);
       state.user = data.user;
