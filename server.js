@@ -25,6 +25,7 @@ app.use(cookieParser());
 app.use('/api/auth',  require('./routes/auth'));
 app.use('/api/slips', require('./routes/slips'));
 app.use('/api/users', require('./routes/users'));
+app.use('/api/ai', require('./routes/ai'));
 
 // ── Serve Frontend ───────────────────────────────────────────────────────────
 // Drop index.html into /public and it will be served at http://localhost:3000

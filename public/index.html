@@ -340,12 +340,12 @@ const DISEASES = [
  {n:"Tuberculosis",c:"Respiratory",i:"fa-lungs",s:["persistent cough","weight loss","night sweats","fatigue","blood in sputum","fever"],dr:{n:"Dr. Sana Mirza",sp:"Pulmonologist",ex:12,fee:900,av:"Tue-Sat 11am-4pm"},m:[{n:"Isoniazid 300mg",d:"1 tab/day",dur:"6 months"},{n:"Rifampicin 600mg",d:"1 tab/day",dur:"6 months"}],r:"DOTS therapy, isolation, regular followup",di:"High calorie, protein, vitamin-rich diet"},
  {n:"Bronchitis",c:"Respiratory",i:"fa-lungs",s:["cough with phlegm","chest discomfort","fatigue","mild fever","wheezing"],dr:{n:"Dr. Sana Mirza",sp:"Pulmonologist",ex:12,fee:700,av:"Tue-Sat 11am-4pm"},m:[{n:"Amoxicillin 500mg",d:"1 cap x 3/day",dur:"7 days"},{n:"Bromhexine syrup",d:"10ml x 3/day",dur:"7 days"}],r:"Avoid smoke, humidify air, rest",di:"Warm fluids, honey-ginger; avoid dairy"},
  {n:"Sinusitis",c:"Eye/ENT",i:"fa-head-side-mask",s:["facial pain","nasal congestion","headache","thick nasal discharge","reduced smell"],dr:{n:"Dr. Hassan Raza",sp:"ENT Specialist",ex:10,fee:500,av:"Mon-Fri 9am-3pm"},m:[{n:"Amoxicillin 500mg",d:"1 cap x 3/day",dur:"7 days"},{n:"Xylometazoline spray",d:"2 puffs x 2/day",dur:"5 days"}],r:"Steam inhalation, warm compress",di:"Hot soups, spicy foods okay; avoid cold drinks"},
- {n:"Gastritis",c:"Digestive",i:"fa-stomach",s:["stomach pain","nausea","bloating","indigestion","loss of appetite"],dr:{n:"Dr. Ayesha Malik",sp:"Gastroenterologist",ex:11,fee:700,av:"Mon-Sat 10am-5pm"},m:[{n:"Pantoprazole 40mg",d:"1 tab before breakfast",dur:"14 days"},{n:"Sucralfate syrup",d:"10ml x 3/day",dur:"14 days"}],r:"Eat smaller meals, avoid stress",di:"Avoid spicy/oily food; bananas, rice, oats"},
+ {n:"Gastritis",c:"Digestive",i:"fa-disease",s:["stomach pain","nausea","bloating","indigestion","loss of appetite"],dr:{n:"Dr. Ayesha Malik",sp:"Gastroenterologist",ex:11,fee:700,av:"Mon-Sat 10am-5pm"},m:[{n:"Pantoprazole 40mg",d:"1 tab before breakfast",dur:"14 days"},{n:"Sucralfate syrup",d:"10ml x 3/day",dur:"14 days"}],r:"Eat smaller meals, avoid stress",di:"Avoid spicy/oily food; bananas, rice, oats"},
  {n:"Acid Reflux (GERD)",c:"Digestive",i:"fa-fire",s:["heartburn","sour taste","chest pain","regurgitation","difficulty swallowing"],dr:{n:"Dr. Ayesha Malik",sp:"Gastroenterologist",ex:11,fee:700,av:"Mon-Sat 10am-5pm"},m:[{n:"Omeprazole 20mg",d:"1 cap before breakfast",dur:"30 days"},{n:"Antacid syrup",d:"10ml after meals",dur:"as needed"}],r:"Don't lie down after eating, elevate head",di:"Avoid coffee, citrus, spicy; eat oats, vegetables"},
- {n:"Peptic Ulcer",c:"Digestive",i:"fa-stomach",s:["burning stomach pain","bloating","nausea","loss of appetite","weight loss"],dr:{n:"Dr. Ayesha Malik",sp:"Gastroenterologist",ex:11,fee:800,av:"Mon-Sat 10am-5pm"},m:[{n:"Pantoprazole 40mg",d:"1 tab x 2/day",dur:"30 days"},{n:"Clarithromycin 500mg",d:"1 tab x 2/day",dur:"14 days"}],r:"Stop NSAIDs, no smoking, manage stress",di:"Avoid alcohol, spicy; eat fiber, lean protein"},
+ {n:"Peptic Ulcer",c:"Digestive",i:"fa-disease",s:["burning stomach pain","bloating","nausea","loss of appetite","weight loss"],dr:{n:"Dr. Ayesha Malik",sp:"Gastroenterologist",ex:11,fee:800,av:"Mon-Sat 10am-5pm"},m:[{n:"Pantoprazole 40mg",d:"1 tab x 2/day",dur:"30 days"},{n:"Clarithromycin 500mg",d:"1 tab x 2/day",dur:"14 days"}],r:"Stop NSAIDs, no smoking, manage stress",di:"Avoid alcohol, spicy; eat fiber, lean protein"},
  {n:"Diarrhea",c:"Digestive",i:"fa-toilet",s:["loose stools","abdominal cramps","dehydration","nausea","weakness"],dr:{n:"Dr. Ayesha Malik",sp:"Gastroenterologist",ex:11,fee:500,av:"Mon-Sat 10am-5pm"},m:[{n:"ORS sachets",d:"1 sachet in 1L water",dur:"as needed"},{n:"Loperamide 2mg",d:"1 tab after each loose stool",dur:"3 days"}],r:"Hydration, rest, hand hygiene",di:"BRAT diet (banana, rice, apple, toast)"},
- {n:"Constipation",c:"Digestive",i:"fa-stomach",s:["difficulty passing stool","bloating","abdominal pain","hard stools","loss of appetite"],dr:{n:"Dr. Ayesha Malik",sp:"Gastroenterologist",ex:11,fee:500,av:"Mon-Sat 10am-5pm"},m:[{n:"Lactulose syrup",d:"15ml at night",dur:"7 days"},{n:"Isabgol",d:"1 tsp at night",dur:"ongoing"}],r:"Daily exercise, regular toilet routine",di:"High-fiber: fruits, vegetables, water 3L/day"},
- {n:"IBS",c:"Digestive",i:"fa-stomach",s:["abdominal cramps","bloating","diarrhea","constipation","gas"],dr:{n:"Dr. Ayesha Malik",sp:"Gastroenterologist",ex:11,fee:800,av:"Mon-Sat 10am-5pm"},m:[{n:"Mebeverine 135mg",d:"1 tab x 3/day",dur:"30 days"},{n:"Probiotics",d:"1 cap/day",dur:"30 days"}],r:"Stress management, yoga, sleep",di:"Low FODMAP, avoid dairy/gluten, small meals"},
+ {n:"Constipation",c:"Digestive",i:"fa-disease",s:["difficulty passing stool","bloating","abdominal pain","hard stools","loss of appetite"],dr:{n:"Dr. Ayesha Malik",sp:"Gastroenterologist",ex:11,fee:500,av:"Mon-Sat 10am-5pm"},m:[{n:"Lactulose syrup",d:"15ml at night",dur:"7 days"},{n:"Isabgol",d:"1 tsp at night",dur:"ongoing"}],r:"Daily exercise, regular toilet routine",di:"High-fiber: fruits, vegetables, water 3L/day"},
+ {n:"IBS",c:"Digestive",i:"fa-disease",s:["abdominal cramps","bloating","diarrhea","constipation","gas"],dr:{n:"Dr. Ayesha Malik",sp:"Gastroenterologist",ex:11,fee:800,av:"Mon-Sat 10am-5pm"},m:[{n:"Mebeverine 135mg",d:"1 tab x 3/day",dur:"30 days"},{n:"Probiotics",d:"1 cap/day",dur:"30 days"}],r:"Stress management, yoga, sleep",di:"Low FODMAP, avoid dairy/gluten, small meals"},
  {n:"Food Poisoning",c:"Digestive",i:"fa-burger",s:["nausea","vomiting","diarrhea","stomach pain","fever","weakness"],dr:{n:"Dr. Ayesha Malik",sp:"Gastroenterologist",ex:11,fee:500,av:"Mon-Sat 10am-5pm"},m:[{n:"ORS sachets",d:"1 in 1L water",dur:"as needed"},{n:"Ondansetron 4mg",d:"1 tab x 2/day",dur:"3 days"}],r:"Hydration, rest, food hygiene",di:"Bland diet, avoid dairy/oily; clear fluids"},
  {n:"Migraine",c:"Neurological",i:"fa-head-side-virus",s:["throbbing headache","nausea","light sensitivity","visual disturbance","sound sensitivity"],dr:{n:"Dr. Fatima Zahra",sp:"Neurologist",ex:14,fee:1000,av:"Tue-Fri 11am-4pm"},m:[{n:"Sumatriptan 50mg",d:"1 tab at onset",dur:"as needed"},{n:"Naproxen 500mg",d:"1 tab x 2/day",dur:"3 days"}],r:"Dark quiet room, sleep, identify triggers",di:"Avoid cheese/chocolate/caffeine; magnesium foods"},
  {n:"Tension Headache",c:"Neurological",i:"fa-head-side-virus",s:["dull headache","neck stiffness","scalp tenderness","fatigue","mild stress"],dr:{n:"Dr. Fatima Zahra",sp:"Neurologist",ex:14,fee:800,av:"Tue-Fri 11am-4pm"},m:[{n:"Ibuprofen 400mg",d:"1 tab x 2/day",dur:"3 days"}],r:"Stretching, posture correction, relaxation",di:"Stay hydrated, balanced meals"},
@@ -379,7 +379,7 @@ const DISEASES = [
  {n:"Insomnia",c:"Mental",i:"fa-bed",s:["difficulty falling asleep","frequent waking","early waking","daytime fatigue","irritability"],dr:{n:"Dr. Nadia Khan",sp:"Psychiatrist",ex:11,fee:800,av:"Mon-Fri 11am-5pm"},m:[{n:"Melatonin 3mg",d:"1 tab at night",dur:"30 days"}],r:"Sleep hygiene, no screens before bed, fixed schedule",di:"Avoid caffeine after 4pm; warm milk, bananas"},
  {n:"Conjunctivitis",c:"Eye/ENT",i:"fa-eye",s:["red eyes","itching","watery discharge","crusty eyelids","light sensitivity"],dr:{n:"Dr. Hassan Raza",sp:"Ophthalmologist",ex:10,fee:500,av:"Mon-Fri 9am-3pm"},m:[{n:"Moxifloxacin eye drops",d:"1 drop x 4/day",dur:"7 days"}],r:"Hand hygiene, no eye rubbing, separate towels",di:"Vitamin A foods: carrots, spinach"},
  {n:"Otitis Media",c:"Eye/ENT",i:"fa-ear-listen",s:["ear pain","hearing loss","fever","ear discharge","irritability"],dr:{n:"Dr. Hassan Raza",sp:"ENT Specialist",ex:10,fee:600,av:"Mon-Fri 9am-3pm"},m:[{n:"Amoxicillin 500mg",d:"1 cap x 3/day",dur:"7 days"},{n:"Paracetamol 500mg",d:"1 tab x 3/day",dur:"5 days"}],r:"Keep ears dry, warm compress",di:"Vitamin C-rich foods, hydration"},
- {n:"Tonsillitis",c:"Eye/ENT",i:"fa-mouth",s:["sore throat","difficulty swallowing","fever","swollen tonsils","bad breath"],dr:{n:"Dr. Hassan Raza",sp:"ENT Specialist",ex:10,fee:500,av:"Mon-Fri 9am-3pm"},m:[{n:"Amoxicillin 500mg",d:"1 cap x 3/day",dur:"7 days"},{n:"Lozenges",d:"1 every 3 hrs",dur:"5 days"}],r:"Warm salt water gargle, rest",di:"Soft cool foods, ice cream, broths"}
+ {n:"Tonsillitis",c:"Eye/ENT",i:"fa-head-side-cough",s:["sore throat","difficulty swallowing","fever","swollen tonsils","bad breath"],dr:{n:"Dr. Hassan Raza",sp:"ENT Specialist",ex:10,fee:500,av:"Mon-Fri 9am-3pm"},m:[{n:"Amoxicillin 500mg",d:"1 cap x 3/day",dur:"7 days"},{n:"Lozenges",d:"1 every 3 hrs",dur:"5 days"}],r:"Warm salt water gargle, rest",di:"Soft cool foods, ice cream, broths"}
 ];
 const QUICK_DISEASES = ["Heart Attack","Diabetes Type 2","Asthma","Typhoid","Dengue","Hypertension","Migraine","COVID-19"];
 const TIPS = [
@@ -486,6 +486,59 @@ const router = {
 
 /* ═══════════════════════════ AUTH ═══════════════════════════ */
 const auth = {
+  showOTPForm() {
+    const formGrid = document.querySelector('#signupForm');
+    formGrid.innerHTML = `
+      <div style="text-align:center;padding:1rem">
+        <i class="fa-solid fa-envelope" style="font-size:3rem;color:var(--primary)"></i>
+        <h3 style="margin:.5rem 0">Check Your Email</h3>
+        <p style="color:var(--muted);font-size:.9rem">We sent a 6-digit OTP to <b>${state.pendingEmail}</b></p>
+      </div>
+      <div>
+        <label>Enter OTP Code</label>
+        <input id="otpInput" type="text" maxlength="6" placeholder="Enter 6-digit code" style="letter-spacing:8px;font-size:1.5rem;text-align:center"/>
+      </div>
+      <div class="err-msg" id="otpErr"></div>
+      <button class="btn" id="otpBtn" onclick="auth.verifyOTP()">
+        <i class="fa-solid fa-check"></i> Verify OTP
+      </button>
+      <p style="text-align:center;font-size:.85rem;color:var(--muted)">Didn't receive? <a href="#" onclick="auth.switchTab('signup')" style="color:var(--primary)">Go back</a></p>
+    `;
+  },
+
+  async verifyOTP() {
+    const otp = $('otpInput').value.trim();
+    const errEl = $('otpErr');
+    errEl.classList.remove('show');
+
+    if (!otp || otp.length !== 6) {
+      errEl.textContent = 'Please enter the 6-digit OTP code.';
+      errEl.classList.add('show');
+      return;
+    }
+
+    setBtn('otpBtn', true, 'Verifying...');
+
+    try {
+      const data = await api.post('/auth/verify-otp', {
+        email: state.pendingEmail,
+        otp: otp,
+        pendingUser: state.pendingUser
+      });
+
+      toast('email verified successfully! Please sign in. 🎉', 'success');
+      auth.switchTab('signin');
+
+    } catch(e) {
+      errEl.textContent = e.message;
+      errEl.classList.add('show');
+    } finally {
+      setBtn('otpBtn', false, '<i class="fa-solid fa-check"></i> Verify OTP');
+    }
+  },
+
+
+
   switchTab(t) {
     $('tabSignin').classList.toggle('active', t === 'signin');
     $('tabSignup').classList.toggle('active', t === 'signup');
@@ -506,11 +559,18 @@ const auth = {
     if (!name || !email || !age || !gender || !username || !password) { errEl.textContent = 'All fields are required.'; errEl.classList.add('show'); return; }
     if (password.length < 8)                                 { errEl.textContent = 'Password must be at least 8 characters.'; errEl.classList.add('show'); return; }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) { errEl.textContent = 'Please enter a valid email address.'; errEl.classList.add('show'); return; }
+
     setBtn('suBtn', true, 'Creating account…');
     try {
       const data = await api.post('/auth/register', { fullName: name, email: email, age: parseInt(age), gender, username, password });
-      toast('Account created successfully! Please sign in. 🎉', 'success');
-      auth.switchTab('signin');
+      
+      // Show OTP verification
+      state.pendingUser = data.pendingUser;
+      state.pendingEmail = email;
+      toast('OTP sent to ' + email + ' ! Please check your inbox. 📧', 'success');
+      auth.showOTPForm();
     } catch(e) {
       errEl.textContent = e.message;
       errEl.classList.add('show');
@@ -725,67 +785,128 @@ const app = {
     };
     r.onerror = () => toast('Voice input failed', 'error');
   },
-
-  analyze() {
+async analyze() {
     if (!state.selected.length) return toast('Select at least 1 symptom', 'error');
-    const scored = DISEASES.map(d => {
-      const matches = state.selected.filter(s => d.s.includes(s)).length;
-      const score = (matches / d.s.length * 0.5 + matches / state.selected.length * 0.5) * 100;
-      return { d, matches, score };
-    }).filter(x => x.matches > 0).sort((a, b) => b.score - a.score);
-    if (!scored.length) return toast('No disease matches selected symptoms', 'error');
-    const top = scored[0];
-    const conf = Math.min(99, Math.round(top.score));
-    state.lastResult = { disease: top.d, confidence: conf, matched: state.selected.filter(s => top.d.s.includes(s)), alts: scored.slice(1, 4) };
-    app.renderResult();
+    
+    toast('Analyzing with AI...', 'info');
+    
+    try {
+      const data = await api.post('/ai/analyze', { symptoms: state.selected });
+      state.lastResult = data.result;
+      state.lastResult.selectedSymptoms = state.selected;
+      app.renderAIResult();
+    } catch(e) {
+      toast(e.message || 'AI analysis failed', 'error');
+    }
   },
-
-  renderResult() {
+  renderAIResult() {
     const r = state.lastResult; if (!r) return;
-    const d = r.disease;
     $('resultArea').innerHTML = `
       <div class="result-card">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem">
-          <div><div style="font-size:.8rem;color:var(--accent);font-weight:600">AI PREDICTION</div><h3><i class="fa-solid ${d.i}"></i> ${d.n}</h3></div>
+          <div><div style="font-size:.8rem;color:var(--accent);font-weight:600">🤖 AI PREDICTION</div><h3>${r.disease}</h3></div>
           <div style="text-align:right"><div style="font-size:.75rem;color:var(--muted)">Confidence</div><div style="font-size:1.4rem;font-weight:700;color:var(--success)">${r.confidence}%</div></div>
         </div>
         <div class="confidence"><div class="confidence-bar" style="width:${r.confidence}%"></div></div>
-        <div style="font-size:.85rem;color:var(--muted)">Matched: ${r.matched.join(', ')}</div>
-        ${r.alts.length ? `<div style="font-size:.8rem;color:var(--muted);margin-top:.4rem">Other possibilities: ${r.alts.map(a=>a.d.n+' ('+Math.round(a.score)+'%)').join(', ')}</div>` : ''}
+        <div style="font-size:.85rem;color:var(--muted)">Matched: ${r.symptoms_matched ? r.symptoms_matched.join(', ') : state.selected.join(', ')}</div>
+
         <div class="info-grid">
-          <div class="info-block"><h4><i class="fa-solid fa-user-doctor"></i> Doctor</h4><ul><li><b>${d.dr.n}</b></li><li>${d.dr.sp}</li><li>${d.dr.ex} yrs experience</li><li>Fee: Rs.${d.dr.fee}</li><li>${d.dr.av}</li></ul></div>
-          <div class="info-block"><h4><i class="fa-solid fa-pills"></i> Medicines</h4><ul>${d.m.map(x=>`<li><b>${x.n}</b> — ${x.d} (${x.dur})</li>`).join('')}</ul></div>
-          <div class="info-block"><h4><i class="fa-solid fa-bed"></i> Routine</h4><ul><li>${d.r}</li></ul></div>
-          <div class="info-block"><h4><i class="fa-solid fa-utensils"></i> Diet</h4><ul><li>${d.di}</li></ul></div>
+          <div class="info-block"><h4><i class="fa-solid fa-pills"></i> Medicines</h4><ul>${r.medicines ? r.medicines.map(x=>`<li><b>${x.name}</b> — ${x.dose} (${x.duration})</li>`).join('') : 'N/A'}</ul></div>
+          <div class="info-block"><h4><i class="fa-solid fa-robot"></i> AI Advice</h4><ul>
+            <li><b>Specialist:</b> ${r.ai_advice?.specialist || 'N/A'}</li>
+            <li><b>Urgency:</b> ${r.ai_advice?.urgency || 'N/A'}</li>
+            <li><b>Warning Signs:</b> ${r.ai_advice?.warning_signs || 'N/A'}</li>
+            <li><b>Home Care:</b> ${r.ai_advice?.home_care || 'N/A'}</li>
+            <li><b>Follow Up:</b> ${r.ai_advice?.follow_up || 'N/A'}</li>
+          </ul></div>
+          <div class="info-block"><h4><i class="fa-solid fa-bed"></i> Routine</h4><ul><li>${r.routine || 'N/A'}</li></ul></div>
+          <div class="info-block"><h4><i class="fa-solid fa-utensils"></i> Diet</h4><ul><li>${r.diet || 'N/A'}</li></ul></div>
         </div>
+
         <div style="margin-top:1rem;display:flex;gap:.5rem;flex-wrap:wrap">
           <button class="btn success" onclick="app.generateSlip()"><i class="fa-solid fa-file-prescription"></i> Generate Medical Slip</button>
+        </div>
+
+        <div class="chat-container" id="chatContainer" style="margin-top:1.5rem;border-top:1px solid var(--glass-border);padding-top:1rem">
+          <h4><i class="fa-solid fa-comments"></i> Ask AI About Your Condition</h4>
+          <div id="chatMessages" style="max-height:300px;overflow-y:auto;margin:1rem 0;display:flex;flex-direction:column;gap:.75rem"></div>
+          <div style="display:flex;gap:.5rem">
+            <input id="chatInput" style="flex:1;padding:.6rem 1rem;border-radius:8px;border:1px solid var(--glass-border);background:var(--bg2);color:var(--text)" placeholder="Ask anything about ${r.disease}..." onkeydown="if(event.key==='Enter') app.sendChat()"/>
+            <button class="btn" onclick="app.sendChat()"><i class="fa-solid fa-paper-plane"></i></button>
+          </div>
         </div>
       </div>`;
     $('resultArea').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   },
 
+  async sendChat() {
+    const input = $('chatInput');
+    const message = input.value.trim();
+    if (!message) return;
+
+    const messagesEl = $('chatMessages');
+    const disease = state.lastResult?.disease || 'unknown condition';
+
+    // Show user message
+    messagesEl.innerHTML += `
+      <div style="align-self:flex-end;background:var(--primary);color:#fff;padding:.6rem 1rem;border-radius:12px 12px 2px 12px;max-width:80%;font-size:.9rem">${message}</div>`;
+    input.value = '';
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+
+    // Show typing indicator
+    messagesEl.innerHTML += `
+      <div id="typing" style="align-self:flex-start;background:var(--bg2);padding:.6rem 1rem;border-radius:12px 12px 12px 2px;font-size:.9rem;color:var(--muted)">AI is typing...</div>`;
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+
+    try {
+      const data = await api.post('/ai/chat', {
+        message,
+        disease,
+        history: state.chatHistory || []
+      });
+
+      // Remove typing indicator
+      document.getElementById('typing')?.remove();
+
+      // Save to history
+      if (!state.chatHistory) state.chatHistory = [];
+      state.chatHistory.push({ role: 'user', content: message });
+      state.chatHistory.push({ role: 'assistant', content: data.reply });
+
+      // Show AI reply
+      messagesEl.innerHTML += `
+        <div style="align-self:flex-start;background:var(--bg2);padding:.6rem 1rem;border-radius:12px 12px 12px 2px;max-width:85%;font-size:.9rem">${data.reply}</div>`;
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+
+    } catch(e) {
+      document.getElementById('typing')?.remove();
+      messagesEl.innerHTML += `
+        <div style="align-self:flex-start;color:var(--danger);font-size:.9rem">Error: ${e.message}</div>`;
+    }
+  },
+  
   async generateSlip() {
     const r = state.lastResult; if (!r) return;
-    const d = r.disease, u = state.user;
+    const u = state.user;
     const slip = {
       id: uid(), date: new Date().toISOString(),
       userName: u.name, age: u.age, gender: u.gender,
-      disease: d.n, confidence: r.confidence,
-      doctor: d.dr, medicines: d.m, routine: d.r, diet: d.di, symptoms: r.matched
+      disease: r.disease, confidence: r.confidence,
+      doctor: r.ai_advice, medicines: r.medicines,
+      routine: r.routine, diet: r.diet,
+      symptoms: r.symptoms_matched || state.selected
     };
 
-    // Save to MySQL via API
     try {
       await api.post('/slips', {
         id: slip.id,
-        disease_name: d.n,
+        disease_name: r.disease,
         confidence:   r.confidence,
-        symptoms:     r.matched,
-        doctor_info:  d.dr,
-        medicines:    d.m,
-        routine:      d.r,
-        diet:         d.di
+        symptoms:     r.symptoms_matched || state.selected,
+        doctor_info:  r.ai_advice,
+        medicines:    r.medicines,
+        routine:      r.routine,
+        diet:         r.diet
       });
       toast('Medical slip saved to database ✓', 'success');
     } catch(e) {
@@ -824,9 +945,15 @@ const app = {
                 <div><b>AI Confidence:</b> ${conf}%</div>
               </div>
               <h3>Reported Symptoms</h3><ul>${symptoms.map(s=>`<li>${s}</li>`).join('')}</ul>
-              <h3>Consulting Doctor</h3>
-              <div style="font-size:.88rem">${doctor.n} — ${doctor.sp} (${doctor.ex} yrs)<br/>Consultation Fee: Rs.${doctor.fee} | ${doctor.av}</div>
-              <h3>Prescription</h3><ul>${medicines.map(m=>`<li><b>${m.n}</b> — ${m.d} for ${m.dur}</li>`).join('')}</ul>
+              <h3>AI Medical Advice</h3>
+              <div style="font-size:.88rem">
+                <b>Specialist:</b> ${doctor?.specialist || 'N/A'}<br/>
+                <b>Urgency:</b> ${doctor?.urgency || 'N/A'}<br/>
+                <b>Home Care:</b> ${doctor?.home_care || 'N/A'}<br/>
+                <b>Warning Signs:</b> ${doctor?.warning_signs || 'N/A'}<br/>
+                <b>Follow Up:</b> ${doctor?.follow_up || 'N/A'}
+              </div>
+              <h3>Prescription</h3><ul>${medicines.map(m=>`<li><b>${m.name}</b> — ${m.dose} for ${m.duration}</li>`).join('')}</ul>
               <h3>Routine & Lifestyle</h3><ul><li>${routine}</li></ul>
               <h3>Diet Plan</h3><ul><li>${diet}</li></ul>
               <div class="slip-footer">This is a computer-generated slip for reference only. Please consult a licensed physician before taking any medication.</div>
