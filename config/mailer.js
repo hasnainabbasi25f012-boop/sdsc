@@ -8,7 +8,7 @@ function generateOTP() {
 
 async function sendOTP(email, otp) {
   await resend.emails.send({
-    from: 'SDSC Medical App <onboarding@resend.dev>',
+    from: 'SDSC Medical App <noreply@hassnain.app>',
     to: email,
     subject: 'Your OTP Verification Code - SDSC',
     html: `
