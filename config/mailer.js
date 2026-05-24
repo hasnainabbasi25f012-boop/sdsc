@@ -1,28 +1,14 @@
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 
-//transporter--
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  },
-  tls: {
-    rejectUnauthorized: false
-  }
-});
-
-//otp generator
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 function generateOTP() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
 async function sendOTP(email, otp) {
-  await transporter.sendMail({
-    from: `"SDSC Medical App" <${process.env.EMAIL_USER}>`,
+  await resend.emails.send({
+    from: 'SDSC Medical App <onboarding@resend.dev>',
     to: email,
     subject: 'Your OTP Verification Code - SDSC',
     html: `
@@ -32,7 +18,7 @@ async function sendOTP(email, otp) {
         <div style="background:#0f172a;color:#38bdf8;font-size:2rem;font-weight:bold;text-align:center;padding:20px;border-radius:8px;letter-spacing:8px">
           ${otp}
         </div>
-        <p style="color:#666;font-size:.85rem;margin-top:20px">This code expires in <b>10 minutes</b>. Do not share it with anyone.</p>
+        <p style="color:#666;font-size:.85rem;margin-top:20px">This code expires in <b>15 minutes</b>. Do not share it with anyone.</p>
         <p style="color:#666;font-size:.85rem">If you did not request this, please ignore this email.</p>
       </div>
     `
